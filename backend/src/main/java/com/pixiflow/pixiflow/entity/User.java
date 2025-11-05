@@ -1,8 +1,6 @@
 package com.pixiflow.pixiflow.entity;
 
 import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -26,11 +24,9 @@ public class User {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    @CreatedDate
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
-    @LastModifiedDate
     private Instant updatedAt;
 
     private Instant deletedAt;
