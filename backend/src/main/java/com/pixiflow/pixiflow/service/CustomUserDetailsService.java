@@ -5,6 +5,8 @@ import com.pixiflow.pixiflow.entity.User;
 import com.pixiflow.pixiflow.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,5 +47,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         userRepository.save(newUser);
 
         return ResponseEntity.ok("registered");
+    }
+
+    public User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth != null && auth.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) auth.getPrincipal();
+            return userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        }
+
+        return null;
     }
 }

@@ -41,11 +41,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequestDTO r){
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(r.email, r.password));
-        } catch (AuthenticationException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(r.email, r.password));
         UserDetails ud = customUserDetailsService.loadUserByUsername(r.email);
         String token = jwt.generateToken(ud);
         return ResponseEntity.ok(new AuthResponseDTO(token));

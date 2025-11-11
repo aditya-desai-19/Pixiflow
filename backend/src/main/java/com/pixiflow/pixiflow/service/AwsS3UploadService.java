@@ -2,6 +2,7 @@ package com.pixiflow.pixiflow.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.pixiflow.pixiflow.dto.FileUploadResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,10 +25,11 @@ public class AwsS3UploadService {
         this.amazonS3 = amazonS3;
     }
 
-    public String uploadFile(MultipartFile file) throws IOException {
+    public FileUploadResponse uploadFile(MultipartFile file) throws IOException {
         String fileName = UUID.randomUUID() + "-" + file.getName();
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileName, file.getInputStream(), null);
         amazonS3.putObject(putObjectRequest);
-        return amazonS3.getUrl(bucketName, fileName).toString();
+        String fileUrl = amazonS3.getUrl(bucketName, fileName).toString();
+        return new FileUploadResponse(fileName, fileUrl);
     }
 }
