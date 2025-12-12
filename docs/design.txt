@@ -1,0 +1,26 @@
+Image processing app:
+	Requirements:
+		1. User should be able to login and logout
+		2. User should be able to upload image and add transformations
+		3. User will get a download able link to download image.
+		
+	Features:
+		Backend:
+			1. Integrate open cv library in spring boot.
+			2. Create image
+				1. Upload transformed image to AWS S3
+				2. Store transformed image link + user details in db.
+			3. Write an api to get all images for a user.
+			4. Write an api to get a particular image by id.
+			5. Write an api to delete an image/multiple images by ids
+				1. Write an api to delete image from s3
+			6. Write tests
+			
+		Frontend:
+			1. Create UI for login and logout
+			2. Create UI for image upload + transformations(refer reduceimages.com)
+			3. Create UI for download image
+			4. Create a tabular UI to show all previously transformed images
+			5. On click of particular image, it should be opened in a modal
+			6. Add option to delete image as well. 
+			7. Write tests
