@@ -1,5 +1,6 @@
 package com.pixiflow.pixiflow;
 
+import nu.pattern.OpenCV;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,7 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class PixiflowApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PixiflowApplication.class, args);
+        OpenCV.loadLocally();
+        SpringApplication.run(PixiflowApplication.class, args);
 	}
 
 }

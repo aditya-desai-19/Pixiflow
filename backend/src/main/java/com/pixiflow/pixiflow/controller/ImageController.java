@@ -2,10 +2,10 @@ package com.pixiflow.pixiflow.controller;
 
 import com.pixiflow.pixiflow.dto.FileUploadResponse;
 import com.pixiflow.pixiflow.dto.ImageResponseDTO;
-import com.pixiflow.pixiflow.entity.Image;
 import com.pixiflow.pixiflow.exceptions.ImageNotFoundException;
 import com.pixiflow.pixiflow.service.AwsS3UploadService;
 import com.pixiflow.pixiflow.service.ImageService;
+import com.pixiflow.pixiflow.service.OpenCVService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,14 +22,16 @@ public class ImageController {
 
     private final AwsS3UploadService awsS3UploadService;
     private final ImageService imageService;
+    private final OpenCVService openCVService;
 
-    public ImageController(AwsS3UploadService awsS3UploadService, ImageService imageService) {
+    public ImageController(AwsS3UploadService awsS3UploadService, ImageService imageService, OpenCVService openCVService) {
         this.awsS3UploadService = awsS3UploadService;
         this.imageService = imageService;
+        this.openCVService = openCVService;
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("height") double height, @RequestParam("width") double width) {
         try {
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest().body("Please select a file to upload.");
@@ -44,8 +46,12 @@ public class ImageController {
                 return ResponseEntity.badRequest().body("Only image files are allowed.");
             }
 
-            FileUploadResponse response = awsS3UploadService.uploadFile(file);
+            byte[] resizedImage = openCVService.resizeImage(file, height, width);
+
+            FileUploadResponse response = awsS3UploadService.uploadFile(resizedImage, file.getContentType());
+
             imageService.saveImage(response);
+
             return ResponseEntity.ok(response.fileUrl);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
