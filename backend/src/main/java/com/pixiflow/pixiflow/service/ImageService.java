@@ -4,6 +4,7 @@ import com.pixiflow.pixiflow.dto.FileUploadResponse;
 import com.pixiflow.pixiflow.dto.ImageResponseDTO;
 import com.pixiflow.pixiflow.entity.Image;
 import com.pixiflow.pixiflow.entity.User;
+import com.pixiflow.pixiflow.exceptions.ImageIdsListEmptyException;
 import com.pixiflow.pixiflow.exceptions.ImageNotFoundException;
 import com.pixiflow.pixiflow.repository.ImageRepository;
 import jakarta.validation.Valid;
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,24 +30,28 @@ public class ImageService {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    public ResponseEntity<?> saveImage(@Valid FileUploadResponse fileUploadResponse) {
-        User user = customUserDetailsService.getCurrentUser();
-        if(user == null) {
-            System.out.println("User not found");
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> saveImage(@Valid FileUploadResponse fileUploadResponse) throws Exception {
+        try {
+            User user = customUserDetailsService.getCurrentUser();
+            if(user == null) {
+                System.out.println("User not found");
+                return ResponseEntity.notFound().build();
+            }
+
+            Image newImage = new Image();
+            newImage.setId(UUID.randomUUID().toString());
+            newImage.setName(fileUploadResponse.fileName);
+            newImage.setImgUrl(fileUploadResponse.fileUrl);
+            newImage.setUser(user);
+            newImage.setDeleted(false);
+            newImage.setCreatedAt(Instant.now());
+
+            imageRepository.save(newImage);
+
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        Image newImage = new Image();
-        newImage.setId(UUID.randomUUID().toString());
-        newImage.setName(fileUploadResponse.fileName);
-        newImage.setImgUrl(fileUploadResponse.fileUrl);
-        newImage.setUser(user);
-        newImage.setDeleted(false);
-        newImage.setCreatedAt(Instant.now());
-
-        imageRepository.save(newImage);
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     private static ImageResponseDTO convertImageToImageResponseDTO(Image image) {
@@ -60,5 +67,19 @@ public class ImageService {
         Page<Image> images = imageRepository.findAll(pageable);
         Page<ImageResponseDTO> res = images.map(ImageService::convertImageToImageResponseDTO);
         return res;
+    }
+
+    public void deleteImages(List<String> imageIds) throws ImageIdsListEmptyException {
+        if(imageIds.isEmpty()) {
+            throw new ImageIdsListEmptyException("imageIds can't be null");
+        }
+
+        imageRepository.deleteAllById(imageIds);
+    }
+
+    public List<String> getImagesNames(List<String> imageIds) throws ImageIdsListEmptyException {
+        if(imageIds.isEmpty()) return new ArrayList<>();
+
+        return imageRepository.findAllById(imageIds).stream().map(Image::getName).toList();
     }
 }
