@@ -7,9 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PixiflowApplication {
 
-	public static void main(String[] args) {
-        OpenCV.loadLocally();
-        SpringApplication.run(PixiflowApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    OpenCV.loadLocally();
+    SpringApplication.run(PixiflowApplication.class, args);
+  }
 }
