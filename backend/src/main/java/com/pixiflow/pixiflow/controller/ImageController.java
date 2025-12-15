@@ -79,12 +79,8 @@ public class ImageController {
   @GetMapping
   public Page<ImageResponseDTO> getAllImages(
       @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageSize) {
-    try {
-      Pageable pageable = PageRequest.of(page, pageSize);
-      return imageService.getAllImages(pageable);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    Pageable pageable = PageRequest.of(page, pageSize);
+    return imageService.getAllImages(pageable);
   }
 
   @DeleteMapping
@@ -93,9 +89,9 @@ public class ImageController {
     try {
       List<String> imagesNames = imageService.getImagesNames(deleteImagesRequestDTO.getImageIds());
 
-      awsS3Service.deleteObjects(imagesNames);
-
       imageService.deleteImages(deleteImagesRequestDTO.getImageIds());
+
+      awsS3Service.deleteObjects(imagesNames);
 
       return ResponseEntity.ok("Successfully deleted images");
     } catch (ImageIdsListEmptyException ex) {

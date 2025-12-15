@@ -66,19 +66,26 @@ public class ImageService {
   }
 
   public ImageResponseDTO getImageById(String id) throws ImageNotFoundException {
-    Image image =
-        imageRepository
-            .findById(id)
-            .orElseThrow(() -> new ImageNotFoundException("Image with " + id + " not found"));
+    User user = customUserDetailsService.getCurrentUser();
+    if (user == null) {
+      throw new ImageNotFoundException("User can't be null");
+    }
+    Image image = imageRepository.getImageByImageId(user.getId(), id);
+
+    if (image == null) {
+      throw new ImageNotFoundException("Image not found");
+    }
     return convertImageToImageResponseDTO(image);
   }
 
+  //todo improve query by join
   public Page<ImageResponseDTO> getAllImages(Pageable pageable) {
     Page<Image> images = imageRepository.findAll(pageable);
     Page<ImageResponseDTO> res = images.map(ImageService::convertImageToImageResponseDTO);
     return res;
   }
 
+  //todo improve query by join
   public void deleteImages(List<String> imageIds) throws ImageIdsListEmptyException {
     if (imageIds.isEmpty()) {
       throw new ImageIdsListEmptyException("imageIds can't be null");
@@ -87,6 +94,7 @@ public class ImageService {
     imageRepository.deleteAllById(imageIds);
   }
 
+  //todo improve query by join
   public List<String> getImagesNames(List<String> imageIds) throws ImageIdsListEmptyException {
     if (imageIds.isEmpty()) return new ArrayList<>();
 
