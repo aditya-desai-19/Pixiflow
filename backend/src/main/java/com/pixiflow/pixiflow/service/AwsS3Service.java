@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.pixiflow.pixiflow.dto.FileUploadResponse;
 import com.pixiflow.pixiflow.exceptions.AwsS3Exception;
+import com.pixiflow.pixiflow.exceptions.ImageListEmptyException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -46,9 +47,10 @@ public class AwsS3Service {
     }
   }
 
-  public void deleteObjects(List<String> imageNames) throws AwsS3Exception {
+  public void deleteObjects(List<String> imageNames)
+      throws ImageListEmptyException, AwsS3Exception {
     if (imageNames.isEmpty()) {
-      throw new AwsS3Exception("Image names can be empty");
+      throw new ImageListEmptyException("Image names can be empty");
     }
 
     try {
