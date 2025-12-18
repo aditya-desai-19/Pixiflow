@@ -1,0 +1,307 @@
+openapi: '3.0.3'
+info:
+  title: Image Processing Service Api
+  version: '1.0'
+servers:
+  - url: https://localhost:8080/api
+    description: Local development server
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: test@gmail.com
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          
+    RegisterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: test
+        email:
+          type: string
+          example: test@gmail.com
+        password:
+          type: string
+      required:
+        - name
+        - email
+        - password
+
+    ImageUploadRequest:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+        height:
+          type: integer
+        width:
+          type: integer
+      required:
+        - file
+        - height
+        - width
+    
+    ImageUploadResponse:
+      type: object
+      properties:
+        token:
+          type: string
+    
+    ImageDetailsResponse:
+      type: object
+      properties:
+        imageId:
+          type: string
+          description: "Unique identifier for the image"
+          example: "img_7890abc"
+        imageUrl:
+          type: string
+          format: uri
+          description: "The public URL where the image is hosted"
+          example: "https://storage.googleapis.com/bucket/image.jpg"
+        userId:
+          type: string
+          description: "The ID of the user who owns the image"
+          example: "user_12345"
+        isDeleted:
+          type: boolean
+          description: "Flag indicating if the image has been soft-deleted"
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          description: "The timestamp when the record was created (ISO-8601)"
+          example: "2023-11-01T10:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: "The timestamp when the record was last updated (ISO-8601)"
+          example: "2023-11-01T12:30:00Z"
+      required:
+        - imageId
+        - imageUrl
+        - userId
+        - isDeleted
+        - createdAt
+        - updatedAt
+    
+    ImageResponsePage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageDetailsResponse'
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        totalElements:
+          type: integer
+          format: int64
+          example: 100
+        totalPages:
+          type: integer
+          example: 10
+        last:
+          type: boolean
+          example: false
+        size:
+          type: integer
+          example: 10
+        number:
+          type: integer
+          description: "The current page number (0-indexed)"
+          example: 0
+        sort:
+          $ref: '#/components/schemas/SortObject'
+        numberOfElements:
+          type: integer
+          example: 10
+        first:
+          type: boolean
+          example: true
+        empty:
+          type: boolean
+          example: false
+    
+    PageableObject:
+      type: object
+      properties:
+        offset:
+          type: integer
+        pageNumber:
+          type: integer
+        pageSize:
+          type: integer
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+
+    SortObject:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+    
+    DeleteImagesRequest:
+      type: object
+      properties:
+        imageIds:
+          type: array
+          description: "A list of unique image identifiers to be deleted"
+          items:
+            type: string
+            example: "img_7890abc"
+      required:
+        - imageId
+    
+    DeleteImagesResponse:
+      type: object
+      properties:
+        token:
+          type: string
+
+
+paths:
+  /api/auth/test:
+    get:
+      summary: Health check Api
+      operationId: test
+      responses:
+        '200':
+          description: Ok
+          content: 
+            application/json:
+              schema:
+                type: string
+  
+  /api/auth/login:
+    post:
+      summary: Login api route
+      operationId: login
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        '200':
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+
+  /api/auth/register:
+    post: 
+      summary: Register api route
+      operationId: register
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        '200':
+          description: Successfully registered
+
+  /api/image:
+    get:
+      summary: Return pageable response of images
+      operationId: getAllImages
+      responses:
+        '200':
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageResponsePage"
+        '500':
+          description: Internal server error
+    delete: 
+      summary: Deletes images
+      operationId: deleteImages
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/DeleteImagesRequest"
+      responses:
+        '200':
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteImagesResponse"
+        '500':
+          description: Internal server error
+      
+
+  /api/image/upload:
+    post:
+      summary: Uploads image to server
+      operationId: handleFileUpload
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/ImageUploadRequest"
+      responses:
+        '200':
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageUploadResponse"
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /api/image/{id}:
+    get: 
+      summary: Gets image detais by id
+      operationId: getImageById
+      parameters:
+        - name: id
+          in: path
+          description: Image id of image
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageDetailsResponse"
+        '404':
+          description: Image not found
+        '500':
+          description: Internal server error
+
