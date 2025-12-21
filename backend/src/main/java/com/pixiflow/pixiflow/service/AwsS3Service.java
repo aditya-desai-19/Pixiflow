@@ -4,8 +4,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.pixiflow.pixiflow.dto.FileUploadResponse;
-import com.pixiflow.pixiflow.exceptions.AwsS3Exception;
-import com.pixiflow.pixiflow.exceptions.ImageListEmptyException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,7 +27,7 @@ public class AwsS3Service {
     this.amazonS3 = amazonS3;
   }
 
-  public FileUploadResponse uploadFile(byte[] fileBytes, String contentType) throws AwsS3Exception {
+  public FileUploadResponse uploadFile(byte[] fileBytes, String contentType) {
     try {
       InputStream inputStream = new ByteArrayInputStream(fileBytes);
       String fileContentType =
@@ -43,16 +41,11 @@ public class AwsS3Service {
       String fileUrl = amazonS3.getUrl(bucketName, fileName).toString();
       return new FileUploadResponse(fileName, fileUrl);
     } catch (Exception e) {
-      throw new AwsS3Exception(e.getMessage());
+      throw new RuntimeException(e.getMessage());
     }
   }
 
-  public void deleteObjects(List<String> imageNames)
-      throws ImageListEmptyException, AwsS3Exception {
-    if (imageNames.isEmpty()) {
-      throw new ImageListEmptyException("Image names can be empty");
-    }
-
+  public void deleteObjects(List<String> imageNames) {
     try {
       List<DeleteObjectsRequest.KeyVersion> keysToDelete = new ArrayList<>();
       for (String key : imageNames) {
@@ -64,7 +57,7 @@ public class AwsS3Service {
 
       amazonS3.deleteObjects(deleteObjectsRequest);
     } catch (Exception ex) {
-      throw new AwsS3Exception(ex.getMessage());
+      throw new RuntimeException(ex.getMessage());
     }
   }
 }

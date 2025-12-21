@@ -181,9 +181,11 @@
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/spec/spec.yaml</inputSpec>
                             <generatorName>spring</generatorName>
-                            <configOptions>
-                                <interfaceOnly>true</interfaceOnly>
-                            </configOptions>
+							<configOptions>
+								<useTags>true</useTags>
+								<interfaceOnly>true</interfaceOnly>
+								<skipDefaultInterface>true</skipDefaultInterface>
+							</configOptions>
                         </configuration>
                     </execution>
                 </executions>

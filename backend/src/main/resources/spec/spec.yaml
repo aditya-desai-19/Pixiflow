@@ -6,6 +6,12 @@ servers:
   - url: https://localhost:8080/api
     description: Local development server
 
+tags:
+  - name: Auth
+    description: Controller methods related to authentication
+  - name: Images
+    description: Controller methods related to Images
+
 components:
   schemas:
     LoginRequest:
@@ -41,27 +47,6 @@ components:
         - name
         - email
         - password
-
-    ImageUploadRequest:
-      type: object
-      properties:
-        file:
-          type: string
-          format: binary
-        height:
-          type: integer
-        width:
-          type: integer
-      required:
-        - file
-        - height
-        - width
-    
-    ImageUploadResponse:
-      type: object
-      properties:
-        token:
-          type: string
     
     ImageDetailsResponse:
       type: object
@@ -72,7 +57,6 @@ components:
           example: "img_7890abc"
         imageUrl:
           type: string
-          format: uri
           description: "The public URL where the image is hosted"
           example: "https://storage.googleapis.com/bucket/image.jpg"
         userId:
@@ -102,65 +86,30 @@ components:
         - updatedAt
     
     ImageResponsePage:
-      type: object
-      properties:
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/ImageDetailsResponse'
-        pageable:
-          $ref: '#/components/schemas/PageableObject'
-        totalElements:
-          type: integer
-          format: int64
-          example: 100
-        totalPages:
-          type: integer
-          example: 10
-        last:
-          type: boolean
-          example: false
-        size:
-          type: integer
-          example: 10
-        number:
-          type: integer
-          description: "The current page number (0-indexed)"
-          example: 0
-        sort:
-          $ref: '#/components/schemas/SortObject'
-        numberOfElements:
-          type: integer
-          example: 10
-        first:
-          type: boolean
-          example: true
-        empty:
-          type: boolean
-          example: false
+      allOf:
+        - $ref: '#/components/schemas/PageableObject'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/ImageDetailsResponse'
     
     PageableObject:
       type: object
       properties:
-        offset:
+        page:
           type: integer
-        pageNumber:
+          example: 0
+        size:
           type: integer
-        pageSize:
+          example: 10
+        totalElements:
           type: integer
-        paged:
-          type: boolean
-        unpaged:
-          type: boolean
-
-    SortObject:
-      type: object
-      properties:
-        empty:
-          type: boolean
-        sorted:
-          type: boolean
-        unsorted:
+          format: int64
+        totalPages:
+          type: integer
+        last:
           type: boolean
     
     DeleteImagesRequest:
@@ -174,19 +123,23 @@ components:
             example: "img_7890abc"
       required:
         - imageId
-    
-    DeleteImagesResponse:
+
+    ErrorResponse:
       type: object
       properties:
-        token:
+        message:
           type: string
+      required:
+        - message
 
 
 paths:
   /api/auth/test:
     get:
+      tags:
+        - Auth
       summary: Health check Api
-      operationId: test
+      operationId: testApp
       responses:
         '200':
           description: Ok
@@ -197,8 +150,10 @@ paths:
   
   /api/auth/login:
     post:
+      tags:
+        - Auth
       summary: Login api route
-      operationId: login
+      operationId: loginUser
       requestBody: 
         required: true
         content: 
@@ -212,11 +167,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LoginResponse"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /api/auth/register:
     post: 
+      tags:
+        - Auth
       summary: Register api route
-      operationId: register
+      operationId: registerUser
       requestBody: 
         required: true
         content: 
@@ -226,23 +195,61 @@ paths:
       responses:
         '200':
           description: Successfully registered
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /api/image:
     get:
+      tags:
+        - Images
       summary: Return pageable response of images
       operationId: getAllImages
+      parameters:
+          - name: page
+            in: path
+            description: Page number
+            required: true
+            schema:
+              type: integer
+          - name: pageSize
+            in: path
+            description: Page 
+            required: true
+            schema:
+              type: integer
+
       responses:
         '200':
-          description: Successfully logged in
+          description: Pageable response of images
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ImageResponsePage"
         '500':
-          description: Internal server error
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
     delete: 
+      tags:
+        - Images
       summary: Deletes images
-      operationId: deleteImages
+      operationId: deleteImagesByIds
       requestBody: 
         required: true
         content: 
@@ -255,35 +262,69 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DeleteImagesResponse"
+                type: string
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         '500':
-          description: Internal server error
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
       
 
   /api/image/upload:
     post:
+      tags:
+        - Images
       summary: Uploads image to server
-      operationId: handleFileUpload
+      operationId: uploadImage
       requestBody: 
         required: true
         content: 
-          application/json:
-            schema: 
-              $ref: "#/components/schemas/ImageUploadRequest"
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                height:
+                  type: integer
+                width:
+                  type: integer
+              required:
+                - file
+                - height
+                - width
       responses:
         '200':
           description: Successfully logged in
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ImageUploadResponse"
+                type: string
         '400':
           description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         '500':
-          description: Internal server error
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /api/image/{id}:
     get: 
+      tags:
+        - Images
       summary: Gets image detais by id
       operationId: getImageById
       parameters:
@@ -301,7 +342,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/ImageDetailsResponse"
         '404':
-          description: Image not found
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         '500':
-          description: Internal server error
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 

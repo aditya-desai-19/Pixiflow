@@ -1,11 +1,12 @@
 package com.pixiflow.pixiflow.service;
 
-import com.pixiflow.pixiflow.dto.UserDTO;
 import com.pixiflow.pixiflow.entity.User;
 import com.pixiflow.pixiflow.repository.UserRepository;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.UUID;
+
+import org.openapitools.model.RegisterRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,15 +37,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         user.getEmail(), user.getPassword(), Collections.emptyList());
   }
 
-  public ResponseEntity<?> saveUser(UserDTO u, PasswordEncoder encoder) {
-    if (userRepository.findByEmail(u.email).isPresent())
+  public ResponseEntity<String> saveUser(RegisterRequest registerRequest, PasswordEncoder encoder) {
+    if (userRepository.findByEmail(registerRequest.getEmail()).isPresent())
       return ResponseEntity.status(HttpStatus.CONFLICT).body("Taken");
 
     User newUser = new User();
     newUser.setId(UUID.randomUUID().toString());
-    newUser.setName(u.name);
-    newUser.setEmail(u.email);
-    newUser.setPassword(encoder.encode(u.password));
+    newUser.setName(registerRequest.getName());
+    newUser.setEmail(registerRequest.getEmail());
+    newUser.setPassword(encoder.encode(registerRequest.getPassword()));
     newUser.setDeleted(false);
     newUser.setCreatedAt(Instant.now());
     newUser.setUpdatedAt(Instant.now());

@@ -1,16 +1,20 @@
 package com.pixiflow.pixiflow.service;
 
 import com.pixiflow.pixiflow.dto.FileUploadResponse;
-import com.pixiflow.pixiflow.dto.ImageResponseDTO;
 import com.pixiflow.pixiflow.entity.Image;
 import com.pixiflow.pixiflow.entity.User;
 import com.pixiflow.pixiflow.exceptions.ImageListEmptyException;
-import com.pixiflow.pixiflow.exceptions.ImageNotFoundException;
+import com.pixiflow.pixiflow.exceptions.UserNotFoundException;
 import com.pixiflow.pixiflow.repository.ImageRepository;
 import jakarta.validation.Valid;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
+
+import org.openapitools.model.ImageDetailsResponse;
+import org.openapitools.model.ImageResponsePage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -49,17 +53,18 @@ public class ImageService {
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
-  private static ImageResponseDTO convertImageToImageResponseDTO(Image image) {
-    return new ImageResponseDTO(
+  private static ImageDetailsResponse convertImageToImageResponseDTO(Image image) {
+    OffsetDateTime createdAt = image.getCreatedAt().atOffset(ZoneOffset.of("+5:30"));
+    OffsetDateTime updatedAt = image.getUpdatedAt().atOffset(ZoneOffset.of("+5:30"));
+    return new ImageDetailsResponse(
         image.getId(),
         image.getImgUrl(),
         image.getUser().getId(),
         image.isDeleted(),
-        image.getCreatedAt(),
-        image.getUpdatedAt());
+        createdAt, updatedAt);
   }
 
-  public ImageResponseDTO getImageById(String id) throws ImageNotFoundException, RuntimeException {
+  public ImageDetailsResponse getImageById(String id)  {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
       throw new RuntimeException("User can't be null");
@@ -67,26 +72,41 @@ public class ImageService {
     Image image = imageRepository.getImageByImageId(user.getId(), id);
 
     if (image == null) {
-      throw new ImageNotFoundException("Image not found");
+//      throw new ImageNotFoundException("Image not found");
     }
     return convertImageToImageResponseDTO(image);
   }
 
-  public Page<ImageResponseDTO> getAllImages(Pageable pageable) throws RuntimeException {
+  private ImageResponsePage toPageResponse(Page<Image> page) {
+
+    return new ImageResponsePage()
+            .content(
+                    page.getContent()
+                            .stream()
+                            .map(ImageService::convertImageToImageResponseDTO)
+                            .toList()
+            )
+            .page(page.getNumber())
+            .size(page.getSize())
+            .totalElements(page.getTotalElements())
+            .totalPages(page.getTotalPages())
+            .last(page.isLast());
+  }
+
+  public ImageResponsePage getAllImages(Pageable pageable) throws RuntimeException {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
       throw new RuntimeException("User can't be null");
     }
 
     Page<Image> images = imageRepository.getAllImagesByUserId(pageable, user.getId());
-    Page<ImageResponseDTO> res = images.map(ImageService::convertImageToImageResponseDTO);
-    return res;
+    return toPageResponse(images);
   }
 
-  public void deleteImages(List<String> imageIds) throws ImageListEmptyException, RuntimeException {
+  public void deleteImages(List<String> imageIds) throws UserNotFoundException, ImageListEmptyException {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
-      throw new RuntimeException("User can't be null");
+      throw new UserNotFoundException("User can't be null");
     }
 
     if (imageIds.isEmpty()) {
@@ -96,11 +116,10 @@ public class ImageService {
     imageRepository.deleteImagesByImageIdsAndUserId(imageIds, user.getId());
   }
 
-  public List<String> getImagesNames(List<String> imageIds)
-      throws ImageListEmptyException, RuntimeException {
+  public List<String> getImagesNames(List<String> imageIds) throws UserNotFoundException, ImageListEmptyException {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
-      throw new RuntimeException("User can't be null");
+      throw new UserNotFoundException("User can't be null");
     }
 
     if (imageIds.isEmpty()) {

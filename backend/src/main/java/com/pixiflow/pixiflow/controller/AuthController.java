@@ -1,11 +1,11 @@
 package com.pixiflow.pixiflow.controller;
 
-import com.pixiflow.pixiflow.dto.AuthRequestDTO;
-import com.pixiflow.pixiflow.dto.AuthResponseDTO;
-import com.pixiflow.pixiflow.dto.UserDTO;
 import com.pixiflow.pixiflow.service.CustomUserDetailsService;
 import com.pixiflow.pixiflow.util.JwtUtil;
-import jakarta.validation.Valid;
+import org.openapitools.api.AuthApi;
+import org.openapitools.model.LoginRequest;
+import org.openapitools.model.LoginResponse;
+import org.openapitools.model.RegisterRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,8 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
-public class AuthController {
+public class AuthController implements AuthApi {
 
   private AuthenticationManager authenticationManager;
 
@@ -36,22 +35,22 @@ public class AuthController {
     this.encoder = encoder;
   }
 
-  @GetMapping("/test")
-  public String test() {
-    return "App is running";
-  }
-
-  @PostMapping("/login")
-  public ResponseEntity<?> login(@Valid @RequestBody AuthRequestDTO r) {
+  @Override
+  public ResponseEntity<LoginResponse> loginUser(LoginRequest loginRequest) {
     authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(r.email, r.password));
-    UserDetails ud = customUserDetailsService.loadUserByUsername(r.email);
+            new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+    UserDetails ud = customUserDetailsService.loadUserByUsername(loginRequest.getEmail());
     String token = jwt.generateToken(ud);
-    return ResponseEntity.ok(new AuthResponseDTO(token));
+    return ResponseEntity.ok(new LoginResponse().token(token));
   }
 
-  @PostMapping("/register")
-  public ResponseEntity<?> register(@Valid @RequestBody UserDTO u) {
-    return customUserDetailsService.saveUser(u, encoder);
+  @Override
+  public ResponseEntity<String> registerUser(RegisterRequest registerRequest) {
+    return customUserDetailsService.saveUser(registerRequest, encoder);
+  }
+
+  @Override
+  public ResponseEntity<String> testApp() {
+    return ResponseEntity.ok("App is running");
   }
 }
