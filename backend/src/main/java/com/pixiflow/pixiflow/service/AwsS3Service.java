@@ -30,7 +30,7 @@ public class AwsS3Service {
   }
 
   public FileUploadResponse uploadFile(byte[] fileBytes, String contentType) {
-    if(!isS3Available()) {
+    if (!isS3Available()) {
       throw new RuntimeException("AWS S3 service is down");
     }
 
@@ -52,7 +52,7 @@ public class AwsS3Service {
   }
 
   public void deleteObjects(List<String> imageNames) {
-    if(!isS3Available()) {
+    if (!isS3Available()) {
       throw new RuntimeException("AWS S3 service is down");
     }
 
@@ -73,9 +73,7 @@ public class AwsS3Service {
 
   private boolean isS3Available() {
     try {
-      amazonS3.headBucket(
-              new HeadBucketRequest(bucketName)
-      );
+      amazonS3.headBucket(new HeadBucketRequest(bucketName));
       return true;
     } catch (SdkClientException e) {
       return false;

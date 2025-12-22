@@ -43,7 +43,8 @@ public class ImageController implements ImagesApi {
   }
 
   @Override
-  public ResponseEntity<ImageResponsePage> getAllImages(Integer page, Integer pageSize) throws UserNotFoundException {
+  public ResponseEntity<ImageResponsePage> getAllImages(Integer page, Integer pageSize)
+      throws UserNotFoundException {
     Pageable pageable = PageRequest.of(page, pageSize);
     ImageResponsePage responsePage = imageService.getAllImages(pageable);
     return ResponseEntity.ok(responsePage);
@@ -57,7 +58,7 @@ public class ImageController implements ImagesApi {
 
   @Override
   public ResponseEntity<String> uploadImage(MultipartFile file, Integer height, Integer width)
-          throws IOException, UserNotFoundException {
+      throws IOException, UserNotFoundException {
     byte[] resizedImage = openCVService.resizeImage(file, height, width);
 
     FileUploadResponse response = awsS3Service.uploadFile(resizedImage, file.getContentType());

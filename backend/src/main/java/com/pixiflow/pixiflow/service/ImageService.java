@@ -34,7 +34,7 @@ public class ImageService {
   }
 
   public ResponseEntity<?> saveImage(@Valid FileUploadResponse fileUploadResponse)
-          throws UserNotFoundException {
+      throws UserNotFoundException {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
       throw new UserNotFoundException("User can't be null");
