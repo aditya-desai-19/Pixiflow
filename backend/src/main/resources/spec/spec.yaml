@@ -220,13 +220,13 @@ paths:
       operationId: getAllImages
       parameters:
           - name: page
-            in: path
+            in: query
             description: Page number
             required: true
             schema:
               type: integer
           - name: pageSize
-            in: path
+            in: query
             description: Page 
             required: true
             schema:

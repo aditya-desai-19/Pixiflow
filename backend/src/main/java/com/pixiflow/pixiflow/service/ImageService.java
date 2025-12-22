@@ -4,6 +4,7 @@ import com.pixiflow.pixiflow.dto.FileUploadResponse;
 import com.pixiflow.pixiflow.entity.Image;
 import com.pixiflow.pixiflow.entity.User;
 import com.pixiflow.pixiflow.exceptions.ImageListEmptyException;
+import com.pixiflow.pixiflow.exceptions.ImageNotFoundException;
 import com.pixiflow.pixiflow.exceptions.UserNotFoundException;
 import com.pixiflow.pixiflow.repository.ImageRepository;
 import jakarta.validation.Valid;
@@ -54,8 +55,8 @@ public class ImageService {
   }
 
   private static ImageDetailsResponse convertImageToImageResponseDTO(Image image) {
-    OffsetDateTime createdAt = image.getCreatedAt().atOffset(ZoneOffset.of("+5:30"));
-    OffsetDateTime updatedAt = image.getUpdatedAt().atOffset(ZoneOffset.of("+5:30"));
+    OffsetDateTime createdAt = image.getCreatedAt() != null ? image.getCreatedAt().atOffset(ZoneOffset.of("+05:30")) : null;
+    OffsetDateTime updatedAt = image.getUpdatedAt() != null ? image.getUpdatedAt().atOffset(ZoneOffset.of("+05:30")) : null;
     return new ImageDetailsResponse(
         image.getId(),
         image.getImgUrl(),
@@ -64,15 +65,15 @@ public class ImageService {
         createdAt, updatedAt);
   }
 
-  public ImageDetailsResponse getImageById(String id)  {
+  public ImageDetailsResponse getImageById(String id) throws ImageNotFoundException, UserNotFoundException {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
-      throw new RuntimeException("User can't be null");
+      throw new UserNotFoundException("User can't be null");
     }
     Image image = imageRepository.getImageByImageId(user.getId(), id);
 
     if (image == null) {
-//      throw new ImageNotFoundException("Image not found");
+      throw new ImageNotFoundException("Image not found");
     }
     return convertImageToImageResponseDTO(image);
   }

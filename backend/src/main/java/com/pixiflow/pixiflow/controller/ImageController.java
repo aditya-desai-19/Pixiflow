@@ -2,6 +2,7 @@ package com.pixiflow.pixiflow.controller;
 
 import com.pixiflow.pixiflow.dto.FileUploadResponse;
 import com.pixiflow.pixiflow.exceptions.ImageListEmptyException;
+import com.pixiflow.pixiflow.exceptions.ImageNotFoundException;
 import com.pixiflow.pixiflow.exceptions.UserNotFoundException;
 import com.pixiflow.pixiflow.service.AwsS3Service;
 import com.pixiflow.pixiflow.service.ImageService;
@@ -50,9 +51,8 @@ public class ImageController implements ImagesApi {
     return ResponseEntity.ok(responsePage);
   }
 
-  @GetMapping("/{id}")
   public ResponseEntity<ImageDetailsResponse> getImageById(@PathVariable String id)
-          throws RuntimeException {
+          throws UserNotFoundException, ImageNotFoundException {
     ImageDetailsResponse response = imageService.getImageById(id);
     return ResponseEntity.ok(response);
   }
