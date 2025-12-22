@@ -97,10 +97,10 @@ public class ImageService {
         .last(page.isLast());
   }
 
-  public ImageResponsePage getAllImages(Pageable pageable) throws RuntimeException {
+  public ImageResponsePage getAllImages(Pageable pageable) throws UserNotFoundException {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
-      throw new RuntimeException("User can't be null");
+      throw new UserNotFoundException("User can't be null");
     }
 
     Page<Image> images = imageRepository.getAllImagesByUserId(pageable, user.getId());

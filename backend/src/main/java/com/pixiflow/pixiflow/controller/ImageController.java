@@ -43,7 +43,7 @@ public class ImageController implements ImagesApi {
   }
 
   @Override
-  public ResponseEntity<ImageResponsePage> getAllImages(Integer page, Integer pageSize) {
+  public ResponseEntity<ImageResponsePage> getAllImages(Integer page, Integer pageSize) throws UserNotFoundException {
     Pageable pageable = PageRequest.of(page, pageSize);
     ImageResponsePage responsePage = imageService.getAllImages(pageable);
     return ResponseEntity.ok(responsePage);
