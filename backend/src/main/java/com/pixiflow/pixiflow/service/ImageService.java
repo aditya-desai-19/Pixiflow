@@ -34,10 +34,10 @@ public class ImageService {
   }
 
   public ResponseEntity<?> saveImage(@Valid FileUploadResponse fileUploadResponse)
-      throws RuntimeException {
+          throws UserNotFoundException {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
-      throw new RuntimeException("User can't be null");
+      throw new UserNotFoundException("User can't be null");
     }
 
     Image newImage = new Image();

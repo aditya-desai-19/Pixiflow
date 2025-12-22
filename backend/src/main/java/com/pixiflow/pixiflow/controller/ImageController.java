@@ -57,7 +57,7 @@ public class ImageController implements ImagesApi {
 
   @Override
   public ResponseEntity<String> uploadImage(MultipartFile file, Integer height, Integer width)
-      throws IOException {
+          throws IOException, UserNotFoundException {
     byte[] resizedImage = openCVService.resizeImage(file, height, width);
 
     FileUploadResponse response = awsS3Service.uploadFile(resizedImage, file.getContentType());
