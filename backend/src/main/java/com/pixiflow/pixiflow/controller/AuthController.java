@@ -38,7 +38,8 @@ public class AuthController implements AuthApi {
   @Override
   public ResponseEntity<LoginResponse> loginUser(LoginRequest loginRequest) {
     authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        new UsernamePasswordAuthenticationToken(
+            loginRequest.getEmail(), loginRequest.getPassword()));
     UserDetails ud = customUserDetailsService.loadUserByUsername(loginRequest.getEmail());
     String token = jwt.generateToken(ud);
     return ResponseEntity.ok(new LoginResponse().token(token));

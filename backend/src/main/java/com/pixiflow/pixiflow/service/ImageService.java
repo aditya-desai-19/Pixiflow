@@ -13,7 +13,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
-
 import org.openapitools.model.ImageDetailsResponse;
 import org.openapitools.model.ImageResponsePage;
 import org.springframework.data.domain.Page;
@@ -55,17 +54,25 @@ public class ImageService {
   }
 
   private static ImageDetailsResponse convertImageToImageResponseDTO(Image image) {
-    OffsetDateTime createdAt = image.getCreatedAt() != null ? image.getCreatedAt().atOffset(ZoneOffset.of("+05:30")) : null;
-    OffsetDateTime updatedAt = image.getUpdatedAt() != null ? image.getUpdatedAt().atOffset(ZoneOffset.of("+05:30")) : null;
+    OffsetDateTime createdAt =
+        image.getCreatedAt() != null
+            ? image.getCreatedAt().atOffset(ZoneOffset.of("+05:30"))
+            : null;
+    OffsetDateTime updatedAt =
+        image.getUpdatedAt() != null
+            ? image.getUpdatedAt().atOffset(ZoneOffset.of("+05:30"))
+            : null;
     return new ImageDetailsResponse(
         image.getId(),
         image.getImgUrl(),
         image.getUser().getId(),
         image.isDeleted(),
-        createdAt, updatedAt);
+        createdAt,
+        updatedAt);
   }
 
-  public ImageDetailsResponse getImageById(String id) throws ImageNotFoundException, UserNotFoundException {
+  public ImageDetailsResponse getImageById(String id)
+      throws ImageNotFoundException, UserNotFoundException {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
       throw new UserNotFoundException("User can't be null");
@@ -81,17 +88,13 @@ public class ImageService {
   private ImageResponsePage toPageResponse(Page<Image> page) {
 
     return new ImageResponsePage()
-            .content(
-                    page.getContent()
-                            .stream()
-                            .map(ImageService::convertImageToImageResponseDTO)
-                            .toList()
-            )
-            .page(page.getNumber())
-            .size(page.getSize())
-            .totalElements(page.getTotalElements())
-            .totalPages(page.getTotalPages())
-            .last(page.isLast());
+        .content(
+            page.getContent().stream().map(ImageService::convertImageToImageResponseDTO).toList())
+        .page(page.getNumber())
+        .size(page.getSize())
+        .totalElements(page.getTotalElements())
+        .totalPages(page.getTotalPages())
+        .last(page.isLast());
   }
 
   public ImageResponsePage getAllImages(Pageable pageable) throws RuntimeException {
@@ -104,7 +107,8 @@ public class ImageService {
     return toPageResponse(images);
   }
 
-  public void deleteImages(List<String> imageIds) throws UserNotFoundException, ImageListEmptyException {
+  public void deleteImages(List<String> imageIds)
+      throws UserNotFoundException, ImageListEmptyException {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
       throw new UserNotFoundException("User can't be null");
@@ -117,7 +121,8 @@ public class ImageService {
     imageRepository.deleteImagesByImageIdsAndUserId(imageIds, user.getId());
   }
 
-  public List<String> getImagesNames(List<String> imageIds) throws UserNotFoundException, ImageListEmptyException {
+  public List<String> getImagesNames(List<String> imageIds)
+      throws UserNotFoundException, ImageListEmptyException {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
       throw new UserNotFoundException("User can't be null");

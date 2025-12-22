@@ -7,10 +7,8 @@ import com.pixiflow.pixiflow.exceptions.UserNotFoundException;
 import com.pixiflow.pixiflow.service.AwsS3Service;
 import com.pixiflow.pixiflow.service.ImageService;
 import com.pixiflow.pixiflow.service.OpenCVService;
-
 import java.io.IOException;
 import java.util.List;
-
 import org.openapitools.api.ImagesApi;
 import org.openapitools.model.*;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +32,8 @@ public class ImageController implements ImagesApi {
   }
 
   @Override
-  public ResponseEntity<String> deleteImagesByIds(DeleteImagesRequest deleteImagesRequest) throws UserNotFoundException, ImageListEmptyException {
+  public ResponseEntity<String> deleteImagesByIds(DeleteImagesRequest deleteImagesRequest)
+      throws UserNotFoundException, ImageListEmptyException {
     List<String> imagesNames = imageService.getImagesNames(deleteImagesRequest.getImageIds());
 
     imageService.deleteImages(deleteImagesRequest.getImageIds());
@@ -52,13 +51,14 @@ public class ImageController implements ImagesApi {
   }
 
   public ResponseEntity<ImageDetailsResponse> getImageById(@PathVariable String id)
-          throws UserNotFoundException, ImageNotFoundException {
+      throws UserNotFoundException, ImageNotFoundException {
     ImageDetailsResponse response = imageService.getImageById(id);
     return ResponseEntity.ok(response);
   }
 
   @Override
-  public ResponseEntity<String> uploadImage(MultipartFile file, Integer height, Integer width) throws IOException {
+  public ResponseEntity<String> uploadImage(MultipartFile file, Integer height, Integer width)
+      throws IOException {
     byte[] resizedImage = openCVService.resizeImage(file, height, width);
 
     FileUploadResponse response = awsS3Service.uploadFile(resizedImage, file.getContentType());

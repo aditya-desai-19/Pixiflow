@@ -5,7 +5,6 @@ import com.pixiflow.pixiflow.repository.UserRepository;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.UUID;
-
 import org.openapitools.model.RegisterRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
