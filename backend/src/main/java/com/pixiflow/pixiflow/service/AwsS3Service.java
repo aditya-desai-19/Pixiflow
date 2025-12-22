@@ -1,7 +1,9 @@
 package com.pixiflow.pixiflow.service;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectsRequest;
+import com.amazonaws.services.s3.model.HeadBucketRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.pixiflow.pixiflow.dto.FileUploadResponse;
 import java.io.ByteArrayInputStream;
@@ -28,6 +30,10 @@ public class AwsS3Service {
   }
 
   public FileUploadResponse uploadFile(byte[] fileBytes, String contentType) {
+    if(!isS3Available()) {
+      throw new RuntimeException("AWS S3 service is down");
+    }
+
     try {
       InputStream inputStream = new ByteArrayInputStream(fileBytes);
       String fileContentType =
@@ -46,6 +52,10 @@ public class AwsS3Service {
   }
 
   public void deleteObjects(List<String> imageNames) {
+    if(!isS3Available()) {
+      throw new RuntimeException("AWS S3 service is down");
+    }
+
     try {
       List<DeleteObjectsRequest.KeyVersion> keysToDelete = new ArrayList<>();
       for (String key : imageNames) {
@@ -58,6 +68,17 @@ public class AwsS3Service {
       amazonS3.deleteObjects(deleteObjectsRequest);
     } catch (Exception ex) {
       throw new RuntimeException(ex.getMessage());
+    }
+  }
+
+  private boolean isS3Available() {
+    try {
+      amazonS3.headBucket(
+              new HeadBucketRequest(bucketName)
+      );
+      return true;
+    } catch (SdkClientException e) {
+      return false;
     }
   }
 }

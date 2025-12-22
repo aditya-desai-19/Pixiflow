@@ -36,9 +36,8 @@ public class ImageController implements ImagesApi {
       throws UserNotFoundException, ImageListEmptyException {
     List<String> imagesNames = imageService.getImagesNames(deleteImagesRequest.getImageIds());
 
-    imageService.deleteImages(deleteImagesRequest.getImageIds());
-
     awsS3Service.deleteObjects(imagesNames);
+    imageService.deleteImages(deleteImagesRequest.getImageIds());
 
     return ResponseEntity.ok("Successfully deleted images");
   }
