@@ -27,9 +27,9 @@ const instructions: Instruction[] = [
 export default function ResizeGuide() {
   return (
     <div className="flex justify-center items-center my-8">
-      <div className="flex w-3/4 h-64 gap-4">
-        <div className="bg-gray-300 flex justify-center w-full">
-          <div className="flex justify-center items-center gap-2 w-full">
+      <div className="flex flex-col-reverse lg:flex-row w-3/4 gap-4 h-auto lg:h-64">
+        <div className="bg-gray-300 flex justify-center w-full h-full">
+          <div className="flex justify-center items-center gap-2 w-full h-40 sm:h-48 lg:h-full">
             <Image size={55} strokeWidth={1} strokeOpacity={1} />
             <MoveRight size={55} strokeWidth={1} strokeOpacity={1} />
             <ImageUpscale size={55} strokeWidth={1} strokeOpacity={1} />

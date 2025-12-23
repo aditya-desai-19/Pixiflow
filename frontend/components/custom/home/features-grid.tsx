@@ -67,7 +67,7 @@ export default function FeaturesGrid() {
   return (
     <div className="flex justify-center items-center my-8 p-4">
       <div className="w-3/4">
-        <div className="grid grid-cols-3 gap-6">
+        <div className="flex flex-col gap-2 lg:grid lg:grid-cols-3 lg:gap-6">
           {cardItems.map((c, i) => {
             return <GridItem key={i} {...c} />
           })}
