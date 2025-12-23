@@ -1,9 +1,11 @@
-import Image from "next/image";
+import Header from "@/components/custom/header"
+import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 export default function Home() {
   return (
     <div>
-      <h1>Hello World</h1>
+      <Header />
     </div>
-  );
+  )
 }
