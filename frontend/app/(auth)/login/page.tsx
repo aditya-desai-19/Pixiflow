@@ -31,7 +31,7 @@ export default function Login() {
     <div className="flex-1 flex h-screen justify-center items-center">
       <div className="flex flex-col gap-4 border-2 p-6 shadow-lg rounded-lg w-1/4">
         <h1 className="text-2xl text-center font-semibold">{"Login"}</h1>
-        
+
         {inputItems.map((inp, i) => (
           <InputGroup key={i} {...inp} />
         ))}

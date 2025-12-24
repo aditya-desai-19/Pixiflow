@@ -28,10 +28,16 @@ export default function Header() {
       </Button>
       <div className="hidden lg:flex gap-2">
         <div>
-          <SecondaryButton onClick={() => router.push("/login")} title="Login" />
+          <SecondaryButton
+            onClick={() => router.push("/login")}
+            title="Login"
+          />
         </div>
         <div>
-          <PrimaryButton onClick={() => router.push("/signup")} title="Signup" />
+          <PrimaryButton
+            onClick={() => router.push("/signup")}
+            title="Signup"
+          />
         </div>
       </div>
       {open && (

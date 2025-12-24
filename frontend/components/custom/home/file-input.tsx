@@ -17,7 +17,12 @@ export default function FileInput() {
   return (
     <div className="flex justify-center items-center my-16">
       <div className="bg-brand-primary w-3/4 p-12 flex flex-col justify-center items-center gap-1 text-surface-secondary shadow-md shadow-brand-primary lg:w-1/2">
-        <Image size={55} strokeWidth={1} strokeOpacity={1} className="my-2 text-lg" />
+        <Image
+          size={55}
+          strokeWidth={1}
+          strokeOpacity={1}
+          className="my-2 text-lg"
+        />
         <input
           ref={inputRef}
           type="file"
