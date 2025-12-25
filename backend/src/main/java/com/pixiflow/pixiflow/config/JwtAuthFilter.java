@@ -1,4 +1,4 @@
-package com.pixiflow.pixiflow.filter;
+package com.pixiflow.pixiflow.config;
 
 import com.pixiflow.pixiflow.service.CustomUserDetailsService;
 import com.pixiflow.pixiflow.util.JwtUtil;
@@ -28,6 +28,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
+    if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+      filterChain.doFilter(request, response);
+      return;
+    }
+
     String authHeader = request.getHeader("Authorization");
     String token = null;
     String username = null;

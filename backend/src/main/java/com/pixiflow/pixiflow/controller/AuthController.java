@@ -2,10 +2,13 @@ package com.pixiflow.pixiflow.controller;
 
 import com.pixiflow.pixiflow.service.CustomUserDetailsService;
 import com.pixiflow.pixiflow.util.JwtUtil;
+import java.time.Duration;
 import org.openapitools.api.AuthApi;
+import org.openapitools.model.GenericResponse;
 import org.openapitools.model.LoginRequest;
-import org.openapitools.model.LoginResponse;
 import org.openapitools.model.RegisterRequest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,22 +39,32 @@ public class AuthController implements AuthApi {
   }
 
   @Override
-  public ResponseEntity<LoginResponse> loginUser(LoginRequest loginRequest) {
+  public ResponseEntity<Void> loginUser(LoginRequest loginRequest) {
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
             loginRequest.getEmail(), loginRequest.getPassword()));
     UserDetails ud = customUserDetailsService.loadUserByUsername(loginRequest.getEmail());
     String token = jwt.generateToken(ud);
-    return ResponseEntity.ok(new LoginResponse().token(token));
+
+    ResponseCookie cookie =
+        ResponseCookie.from("access_token", token)
+            .httpOnly(true)
+            .secure(false) // true in prod
+            .sameSite("Lax") // None in prod
+            .path("/")
+            .maxAge(Duration.ofDays(1))
+            .build();
+
+    return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
   }
 
   @Override
-  public ResponseEntity<String> registerUser(RegisterRequest registerRequest) {
+  public ResponseEntity<GenericResponse> registerUser(RegisterRequest registerRequest) {
     return customUserDetailsService.saveUser(registerRequest, encoder);
   }
 
   @Override
-  public ResponseEntity<String> testApp() {
-    return ResponseEntity.ok("App is running");
+  public ResponseEntity<GenericResponse> testApp() {
+    return ResponseEntity.ok(new GenericResponse().message("App is running"));
   }
 }

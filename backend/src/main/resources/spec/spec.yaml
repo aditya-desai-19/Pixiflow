@@ -2,9 +2,6 @@ openapi: '3.0.3'
 info:
   title: Image Processing Service Api
   version: '1.0'
-servers:
-  - url: https://localhost:8080/api
-    description: Local development server
 
 tags:
   - name: Auth
@@ -26,10 +23,10 @@ components:
         - email
         - password
 
-    LoginResponse:
+    GenericResponse:
       type: object
       properties:
-        token:
+        message:
           type: string
           
     RegisterRequest:
@@ -134,7 +131,7 @@ components:
 
 
 paths:
-  /auth/test:
+  /api/auth/test:
     get:
       tags:
         - Auth
@@ -146,9 +143,9 @@ paths:
           content: 
             application/json:
               schema:
-                type: string
+                $ref: "#/components/schemas/GenericResponse"
   
-  /auth/login:
+  /api/auth/login:
     post:
       tags:
         - Auth
@@ -161,12 +158,8 @@ paths:
             schema: 
               $ref: "#/components/schemas/LoginRequest"
       responses:
-        '200':
+        '204':
           description: Successfully logged in
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LoginResponse"
         '400':
           description: Bad request
           content:
@@ -180,7 +173,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /auth/register:
+  /api/auth/register:
     post: 
       tags:
         - Auth
@@ -198,7 +191,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: "#/components/schemas/GenericResponse"
         '400':
           description: Bad request
           content:
@@ -212,7 +205,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /image:
+  /api/image:
     get:
       tags:
         - Images
@@ -277,7 +270,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
       
 
-  /image/upload:
+  /api/image/upload:
     post:
       tags:
         - Images
@@ -321,7 +314,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /image/{id}:
+  /api/image/{id}:
     get: 
       tags:
         - Images

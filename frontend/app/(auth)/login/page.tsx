@@ -6,11 +6,15 @@ import InputGroup, {
 } from "@/components/custom/auth/input-group"
 import { PrimaryButton } from "@/components/custom/button"
 import { LoginUserRequest } from "@/generated"
-import { FormEvent, useState } from "react"
+import { useRouter } from "next/navigation"
+import { FormEvent, useRef, useState } from "react"
 
 export default function Login() {
   const [emailError, setEmailError] = useState<string>("")
   const [passwordError, setPasswordError] = useState<string>("")
+
+  const formRef = useRef<HTMLFormElement>(null)
+  const router = useRouter()
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -40,9 +44,13 @@ export default function Login() {
           password,
         },
       }
+
       const res = await authClient.loginUser(body)
+      console.log({ res })
+      formRef?.current?.reset()
+      router.replace("/")
     } catch (e) {
-      console.error("Some error occured while signing up ", e)
+      console.error("Some error occured while login ", e)
     }
   }
 
@@ -53,6 +61,7 @@ export default function Login() {
       placeholder: "Email",
       isRequired: true,
       type: "email",
+      name: "email",
       isError: emailError.length > 0,
       errorMessage: emailError,
     },
@@ -62,6 +71,7 @@ export default function Login() {
       placeholder: "Password",
       isRequired: true,
       type: "password",
+      name: "password",
       isError: passwordError.length > 0,
       errorMessage: passwordError,
     },

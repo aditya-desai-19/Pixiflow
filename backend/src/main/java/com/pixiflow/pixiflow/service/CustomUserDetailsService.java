@@ -5,8 +5,8 @@ import com.pixiflow.pixiflow.repository.UserRepository;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.UUID;
+import org.openapitools.model.GenericResponse;
 import org.openapitools.model.RegisterRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,9 +36,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         user.getEmail(), user.getPassword(), Collections.emptyList());
   }
 
-  public ResponseEntity<String> saveUser(RegisterRequest registerRequest, PasswordEncoder encoder) {
+  public ResponseEntity<GenericResponse> saveUser(
+      RegisterRequest registerRequest, PasswordEncoder encoder) {
     if (userRepository.findByEmail(registerRequest.getEmail()).isPresent())
-      return ResponseEntity.status(HttpStatus.CONFLICT).body("Taken");
+      throw new RuntimeException("User email already taken");
 
     User newUser = new User();
     newUser.setId(UUID.randomUUID().toString());
@@ -50,7 +51,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     newUser.setUpdatedAt(Instant.now());
     userRepository.save(newUser);
 
-    return ResponseEntity.ok("registered");
+    return ResponseEntity.ok(new GenericResponse().message("Successfully registered"));
   }
 
   public User getCurrentUser() {

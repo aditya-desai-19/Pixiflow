@@ -6,13 +6,17 @@ import InputGroup, {
 } from "@/components/custom/auth/input-group"
 import { PrimaryButton } from "@/components/custom/button"
 import { RegisterUserRequest } from "@/generated"
-import { FormEvent, useState } from "react"
+import { useRouter } from "next/navigation"
+import { FormEvent, useRef, useState } from "react"
 
 export default function SignUp() {
   const [nameError, setNameError] = useState<string>("")
   const [emailError, setEmailError] = useState<string>("")
   const [passwordError, setPasswordError] = useState<string>("")
   const [confirmPasswordError, setConfirmPassword] = useState<string>("")
+
+  const formRef = useRef<HTMLFormElement>(null)
+  const router = useRouter()
 
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -60,7 +64,9 @@ export default function SignUp() {
           password,
         },
       }
-      const res = await authClient.registerUser(body)
+      await authClient.registerUser(body)
+      formRef?.current?.reset()
+      router.push("/login")
     } catch (e) {
       console.error("Some error occured while signing up ", e)
     }
@@ -114,7 +120,11 @@ export default function SignUp() {
       <div className="flex flex-col gap-3 border-2 p-6 shadow-lg rounded-lg w-1/4">
         <h1 className="text-2xl text-center font-semibold">{"Signup"}</h1>
 
-        <form onSubmit={handleFormSubmit} className="flex flex-col gap-2">
+        <form
+          ref={formRef}
+          onSubmit={handleFormSubmit}
+          className="flex flex-col gap-2"
+        >
           {inputItems.map((inp, i) => (
             <InputGroup key={i} {...inp} />
           ))}
