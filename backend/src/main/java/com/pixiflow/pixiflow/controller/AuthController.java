@@ -39,6 +39,20 @@ public class AuthController implements AuthApi {
   }
 
   @Override
+  public ResponseEntity<Void> authLogoutPost() {
+    ResponseCookie cookie =
+        ResponseCookie.from("access_token", null)
+            .httpOnly(true)
+            .secure(false) // true in prod
+            .sameSite("Lax") // None in prod
+            .path("/")
+            .maxAge(0)
+            .build();
+
+    return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
+  }
+
+  @Override
   public ResponseEntity<Void> loginUser(LoginRequest loginRequest) {
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(

@@ -204,6 +204,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout user
+      responses:
+        "204":
+          description: Logged out successfully
+
 
   /api/image:
     get:
