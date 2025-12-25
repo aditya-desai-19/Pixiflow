@@ -122,7 +122,7 @@ components:
             type: string
             example: "img_7890abc"
       required:
-        - imageId
+        - imageIds
 
     ErrorResponse:
       type: object
@@ -134,7 +134,7 @@ components:
 
 
 paths:
-  /api/auth/test:
+  /auth/test:
     get:
       tags:
         - Auth
@@ -148,7 +148,7 @@ paths:
               schema:
                 type: string
   
-  /api/auth/login:
+  /auth/login:
     post:
       tags:
         - Auth
@@ -180,7 +180,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /api/auth/register:
+  /auth/register:
     post: 
       tags:
         - Auth
@@ -212,7 +212,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /api/image:
+  /image:
     get:
       tags:
         - Images
@@ -277,7 +277,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
       
 
-  /api/image/upload:
+  /image/upload:
     post:
       tags:
         - Images
@@ -321,7 +321,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /api/image/{id}:
+  /image/{id}:
     get: 
       tags:
         - Images

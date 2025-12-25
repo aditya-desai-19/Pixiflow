@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "format": "prettier --write '**/*.{ts,tsx}'"
+    "format": "prettier --write '**/*.{ts,tsx}'",
+    "gen": "openapi-generator-cli generate -i ../backend/src/main/resources/spec/spec.yaml -g typescript-fetch -o generated --additional-properties=supportsES6=true,withInterfaces=true,useSingleRequestParameter=true"
   },
   "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.26.0",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-navigation-menu": "^1.2.14",
     "@radix-ui/react-slot": "^1.2.4",
