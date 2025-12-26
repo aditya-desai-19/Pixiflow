@@ -6,7 +6,7 @@ import Tagline from "@/components/custom/pages/home/tag-line"
 
 export default function Home() {
   return (
-    <div className="overflow-auto">
+    <div>
       <Tagline />
       <FileInput />
       <FeaturesGrid />

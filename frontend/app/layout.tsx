@@ -25,7 +25,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={inter.className}>
-      <body>
+      <body className="overflow-auto">
         <div className="flex flex-col h-screen lg:mx-10">
           <AuthHandler token={accessToken} />
           <Header />
