@@ -1,4 +1,4 @@
-import { AuthApi, Configuration, ImagesApi } from "../generated"
+import { AuthApi, Configuration, ImagesApi, UserApi } from "../generated"
 
 const baseConfig = new Configuration({
   basePath: process.env.NEXT_PUBLIC_API_URL,
@@ -7,3 +7,4 @@ const baseConfig = new Configuration({
 
 export const authClient = new AuthApi(baseConfig)
 export const imagesClient = new ImagesApi(baseConfig)
+export const userClient = new UserApi(baseConfig)

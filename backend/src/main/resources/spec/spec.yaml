@@ -128,7 +128,17 @@ components:
           type: string
       required:
         - message
-
+    
+    UserResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+      required:
+        - name
+        - email
 
 paths:
   /api/auth/test:
@@ -215,7 +225,6 @@ paths:
         "204":
           description: Logged out successfully
 
-
   /api/image:
     get:
       tags:
@@ -280,7 +289,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
       
-
   /api/image/upload:
     post:
       tags:
@@ -358,3 +366,16 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /api/user:
+    get:
+      tags:
+        - User
+      summary: Get user info
+      operationId: getUser
+      responses:
+        '200':
+          description: Successfully fetched user info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"

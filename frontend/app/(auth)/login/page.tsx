@@ -1,6 +1,6 @@
 "use client"
 
-import { authClient } from "@/api/client"
+import { authClient, userClient } from "@/api/client"
 import InputGroup, {
   InputGroupProps,
 } from "@/components/custom/pages/auth/input-group"
@@ -18,7 +18,7 @@ export default function Login() {
 
   const formRef = useRef<HTMLFormElement>(null)
   const router = useRouter()
-  const { setIsLoggedIn } = useAuthStore()
+  const { setIsLoggedIn, setUserEmail, setUserName } = useAuthStore()
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -51,9 +51,14 @@ export default function Login() {
       }
 
       await authClient.loginUser(body)
+
+      const user = await userClient.getUser()
+      setUserName(user.name)
+      setUserEmail(user.email)
+      setIsLoggedIn(true)
+
       formRef?.current?.reset()
       router.replace("/")
-      setIsLoggedIn(true)
     } catch (e) {
       console.error("Some error occured while login ", e)
     } finally {

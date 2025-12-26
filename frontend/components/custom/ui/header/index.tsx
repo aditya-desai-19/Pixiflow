@@ -21,7 +21,7 @@ import Spinner from "../spinner"
 export default function Header() {
   const [open, setOpen] = useState<boolean>(false)
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false)
-  const { isLoggedIn, reset } = useAuthStore()
+  const { isLoggedIn, reset, userName } = useAuthStore()
 
   const router = useRouter()
 
@@ -52,8 +52,7 @@ export default function Header() {
               className="flex items-center gap-2 w-32 justify-center"
             >
               <User className="h-4 w-4" />
-              {/* todo fetch from server */}
-              <span className="truncate">{"Aditya"}</span>
+              <span className="truncate">{userName}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>

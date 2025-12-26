@@ -4,6 +4,7 @@ import com.pixiflow.pixiflow.service.CustomUserDetailsService;
 import com.pixiflow.pixiflow.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -33,13 +34,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
       return;
     }
 
-    String authHeader = request.getHeader("Authorization");
     String token = null;
     String username = null;
 
-    // Header is valid
-    if (authHeader != null && authHeader.startsWith("Bearer ")) {
-      token = authHeader.substring(7);
+    if (request.getCookies() != null) {
+      for (Cookie cookie : request.getCookies()) {
+        if (cookie.getName().equals("access_token")) {
+          token = cookie.getValue();
+          break;
+        }
+      }
+    }
+
+    if (token != null) {
       username = jwtUtil.extractUsername(token);
     }
 

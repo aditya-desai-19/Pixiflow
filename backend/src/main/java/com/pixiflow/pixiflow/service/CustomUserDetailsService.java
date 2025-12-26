@@ -1,12 +1,14 @@
 package com.pixiflow.pixiflow.service;
 
 import com.pixiflow.pixiflow.entity.User;
+import com.pixiflow.pixiflow.exceptions.UserNotFoundException;
 import com.pixiflow.pixiflow.repository.UserRepository;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.UUID;
 import org.openapitools.model.GenericResponse;
 import org.openapitools.model.RegisterRequest;
+import org.openapitools.model.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,5 +66,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     return null;
+  }
+
+  public UserResponse getNameAndEmailOfCurrentUser() {
+    User user = getCurrentUser();
+    if (user == null) {
+      throw new UserNotFoundException("User not found");
+    }
+
+    return new UserResponse(user.getName(), user.getEmail());
   }
 }

@@ -1,5 +1,6 @@
 "use client"
 
+import { userClient } from "@/api/client"
 import { useAuthStore } from "@/zustand/authStore"
 import { useEffect } from "react"
 
@@ -8,10 +9,20 @@ interface AuthHandlerProps {
 }
 
 export default function AuthHandler({ token }: AuthHandlerProps) {
-  const { setIsLoggedIn } = useAuthStore()
+  const { setIsLoggedIn, setUserEmail, setUserName } = useAuthStore()
 
   useEffect(() => {
-    setIsLoggedIn(!!token)
+    const handleAuth = async (token: string | undefined) => {
+      setIsLoggedIn(!!token)
+
+      if (token) {
+        const user = await userClient.getUser()
+        setUserName(user.name)
+        setUserEmail(user.email)
+      }
+    }
+
+    handleAuth(token)
   }, [token])
 
   return null
