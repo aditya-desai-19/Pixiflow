@@ -1,8 +1,8 @@
-import FeaturesGrid from "@/components/custom/home/features-grid"
-import FileInput from "@/components/custom/home/file-input"
-import Footer from "@/components/custom/home/footer"
-import ResizeGuide from "@/components/custom/home/resize-guide"
-import Tagline from "@/components/custom/home/tag-line"
+import FeaturesGrid from "@/components/custom/pages/home/features-grid"
+import FileInput from "@/components/custom/pages/home/file-input"
+import Footer from "@/components/custom/pages/home/footer"
+import ResizeGuide from "@/components/custom/pages/home/resize-guide"
+import Tagline from "@/components/custom/pages/home/tag-line"
 
 export default function Home() {
   return (

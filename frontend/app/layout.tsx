@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import Header from "@/components/custom/header"
+import Header from "@/components/custom/ui/header"
 import { cookies } from "next/headers"
-import AuthHandler from "@/components/custom/auth/auth-handler"
+import AuthHandler from "@/components/custom/pages/auth/auth-handler"
 
 const inter = Inter({
   subsets: ["latin"],

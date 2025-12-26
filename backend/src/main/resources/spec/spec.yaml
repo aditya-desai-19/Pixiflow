@@ -210,6 +210,7 @@ paths:
       tags:
         - Auth
       summary: Logout user
+      operationId: logoutUser
       responses:
         "204":
           description: Logged out successfully

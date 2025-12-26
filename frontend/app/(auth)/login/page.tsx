@@ -3,8 +3,9 @@
 import { authClient } from "@/api/client"
 import InputGroup, {
   InputGroupProps,
-} from "@/components/custom/auth/input-group"
-import { PrimaryButton } from "@/components/custom/button"
+} from "@/components/custom/pages/auth/input-group"
+import { IconButton } from "@/components/custom/ui/button"
+import Spinner from "@/components/custom/ui/spinner"
 import { LoginUserRequest } from "@/generated"
 import { useAuthStore } from "@/zustand/authStore"
 import { useRouter } from "next/navigation"
@@ -13,6 +14,7 @@ import { FormEvent, useRef, useState } from "react"
 export default function Login() {
   const [emailError, setEmailError] = useState<string>("")
   const [passwordError, setPasswordError] = useState<string>("")
+  const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false)
 
   const formRef = useRef<HTMLFormElement>(null)
   const router = useRouter()
@@ -39,6 +41,7 @@ export default function Login() {
 
     if (!isValid) return
 
+    setIsLoggingIn(true)
     try {
       const body: LoginUserRequest = {
         loginRequest: {
@@ -53,6 +56,8 @@ export default function Login() {
       setIsLoggedIn(true)
     } catch (e) {
       console.error("Some error occured while login ", e)
+    } finally {
+      setIsLoggingIn(false)
     }
   }
 
@@ -90,7 +95,17 @@ export default function Login() {
           ))}
 
           <div className="my-2 w-full">
-            <PrimaryButton onClick={() => {}} title="Login" type="submit" />
+            <IconButton
+              variant={"default"}
+              icon={
+                isLoggingIn ? (
+                  <Spinner className="text-surface-primary animate-spin" />
+                ) : null
+              }
+              title="Login"
+              className="bg-brand-primary hover:bg-brand-hover cursor-pointer w-full disabled:bg-brand-disabled"
+              disabled={isLoggingIn}
+            />
           </div>
         </form>
       </div>

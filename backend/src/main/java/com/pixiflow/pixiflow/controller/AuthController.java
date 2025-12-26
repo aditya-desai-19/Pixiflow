@@ -39,7 +39,7 @@ public class AuthController implements AuthApi {
   }
 
   @Override
-  public ResponseEntity<Void> authLogoutPost() {
+  public ResponseEntity<Void> logoutUser() {
     ResponseCookie cookie =
         ResponseCookie.from("access_token", null)
             .httpOnly(true)

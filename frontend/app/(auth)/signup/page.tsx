@@ -3,8 +3,9 @@
 import { authClient } from "@/api/client"
 import InputGroup, {
   InputGroupProps,
-} from "@/components/custom/auth/input-group"
-import { PrimaryButton } from "@/components/custom/button"
+} from "@/components/custom/pages/auth/input-group"
+import { IconButton } from "@/components/custom/ui/button"
+import Spinner from "@/components/custom/ui/spinner"
 import { RegisterUserRequest } from "@/generated"
 import { useRouter } from "next/navigation"
 import { FormEvent, useRef, useState } from "react"
@@ -14,6 +15,7 @@ export default function SignUp() {
   const [emailError, setEmailError] = useState<string>("")
   const [passwordError, setPasswordError] = useState<string>("")
   const [confirmPasswordError, setConfirmPassword] = useState<string>("")
+  const [isSigningUp, setIsSigningUp] = useState<boolean>(false)
 
   const formRef = useRef<HTMLFormElement>(null)
   const router = useRouter()
@@ -56,6 +58,7 @@ export default function SignUp() {
 
     if (!isValid) return
 
+    setIsSigningUp(true)
     try {
       const body: RegisterUserRequest = {
         registerRequest: {
@@ -69,6 +72,8 @@ export default function SignUp() {
       router.push("/login")
     } catch (e) {
       console.error("Some error occured while signing up ", e)
+    } finally {
+      setIsSigningUp(false)
     }
   }
 
@@ -130,7 +135,17 @@ export default function SignUp() {
           ))}
 
           <div className="my-2 w-full">
-            <PrimaryButton onClick={() => {}} title="Signup" type="submit" />
+            <IconButton
+              variant={"default"}
+              icon={
+                isSigningUp ? (
+                  <Spinner className="text-surface-primary animate-spin" />
+                ) : null
+              }
+              title="Signup"
+              className="bg-brand-primary hover:bg-brand-hover cursor-pointer w-full disabled:bg-brand-disabled"
+              disabled={isSigningUp}
+            />
           </div>
         </form>
       </div>

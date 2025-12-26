@@ -9,12 +9,13 @@
   --color-surface-tertiary: #e3e0f3;  
 
   --color-brand-primary: #8685ef; 
+  --color-brand-hover: #6467cd;
+  --color-brand-disabled: #B0B0F0;
 
   --color-text-primary: #333333;
   --color-text-secondary: #555555;
   --color-text-muted: #888888;
 
-  --color-brand-hover: #6467cd;
 }
 
 body {
