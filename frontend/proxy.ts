@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 
 const AUTH_ROUTES = ["/login", "/signup"]
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   const accessToken = req.cookies.get("access_token")?.value

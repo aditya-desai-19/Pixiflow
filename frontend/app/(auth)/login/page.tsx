@@ -6,6 +6,7 @@ import InputGroup, {
 } from "@/components/custom/auth/input-group"
 import { PrimaryButton } from "@/components/custom/button"
 import { LoginUserRequest } from "@/generated"
+import { useAuthStore } from "@/zustand/authStore"
 import { useRouter } from "next/navigation"
 import { FormEvent, useRef, useState } from "react"
 
@@ -15,6 +16,7 @@ export default function Login() {
 
   const formRef = useRef<HTMLFormElement>(null)
   const router = useRouter()
+  const { setIsLoggedIn } = useAuthStore()
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -45,10 +47,10 @@ export default function Login() {
         },
       }
 
-      const res = await authClient.loginUser(body)
-      console.log({ res })
+      await authClient.loginUser(body)
       formRef?.current?.reset()
       router.replace("/")
+      setIsLoggedIn(true)
     } catch (e) {
       console.error("Some error occured while login ", e)
     }
