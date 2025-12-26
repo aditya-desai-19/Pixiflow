@@ -1,13 +1,9 @@
 package com.pixiflow.pixiflow.controller;
 
 import com.pixiflow.pixiflow.dto.FileUploadResponse;
-import com.pixiflow.pixiflow.exceptions.ImageListEmptyException;
-import com.pixiflow.pixiflow.exceptions.ImageNotFoundException;
-import com.pixiflow.pixiflow.exceptions.UserNotFoundException;
 import com.pixiflow.pixiflow.service.AwsS3Service;
 import com.pixiflow.pixiflow.service.ImageService;
 import com.pixiflow.pixiflow.service.OpenCVService;
-import java.io.IOException;
 import java.util.List;
 import org.openapitools.api.ImagesApi;
 import org.openapitools.model.*;
@@ -32,8 +28,7 @@ public class ImageController implements ImagesApi {
   }
 
   @Override
-  public ResponseEntity<String> deleteImagesByIds(DeleteImagesRequest deleteImagesRequest)
-      throws UserNotFoundException, ImageListEmptyException {
+  public ResponseEntity<String> deleteImagesByIds(DeleteImagesRequest deleteImagesRequest) {
     List<String> imagesNames = imageService.getImagesNames(deleteImagesRequest.getImageIds());
 
     awsS3Service.deleteObjects(imagesNames);
@@ -43,22 +38,19 @@ public class ImageController implements ImagesApi {
   }
 
   @Override
-  public ResponseEntity<ImageResponsePage> getAllImages(Integer page, Integer pageSize)
-      throws UserNotFoundException {
+  public ResponseEntity<ImageResponsePage> getAllImages(Integer page, Integer pageSize) {
     Pageable pageable = PageRequest.of(page, pageSize);
     ImageResponsePage responsePage = imageService.getAllImages(pageable);
     return ResponseEntity.ok(responsePage);
   }
 
-  public ResponseEntity<ImageDetailsResponse> getImageById(@PathVariable String id)
-      throws UserNotFoundException, ImageNotFoundException {
-    ImageDetailsResponse response = imageService.getImageById(id);
-    return ResponseEntity.ok(response);
+  @Override
+  public ResponseEntity<ImageDetailsResponse> getImageById(@PathVariable String id) {
+    return ResponseEntity.ok(imageService.getImageById(id));
   }
 
   @Override
-  public ResponseEntity<String> uploadImage(MultipartFile file, Integer height, Integer width)
-      throws IOException, UserNotFoundException {
+  public ResponseEntity<String> uploadImage(MultipartFile file, Integer height, Integer width) {
     byte[] resizedImage = openCVService.resizeImage(file, height, width);
 
     FileUploadResponse response = awsS3Service.uploadFile(resizedImage, file.getContentType());

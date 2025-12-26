@@ -1,6 +1,6 @@
 package com.pixiflow.pixiflow.exceptions;
 
-public class ImageListEmptyException extends Exception {
+public class ImageListEmptyException extends RuntimeException {
   public ImageListEmptyException(String message) {
     super(message);
   }

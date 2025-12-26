@@ -1,6 +1,5 @@
 package com.pixiflow.pixiflow.exceptions;
 
-import java.io.IOException;
 import org.openapitools.model.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,11 +37,5 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleImageIdsListEmptyException(
       ImageListEmptyException ex) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ex.getMessage()));
-  }
-
-  @ExceptionHandler(IOException.class)
-  public ResponseEntity<ErrorResponse> handleIOException(IOException ex) {
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body(new ErrorResponse(ex.getMessage()));
   }
 }

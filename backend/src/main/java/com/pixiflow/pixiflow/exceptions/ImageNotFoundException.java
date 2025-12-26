@@ -1,6 +1,6 @@
 package com.pixiflow.pixiflow.exceptions;
 
-public class ImageNotFoundException extends Exception {
+public class ImageNotFoundException extends RuntimeException {
   public ImageNotFoundException(String message) {
     super(message);
   }

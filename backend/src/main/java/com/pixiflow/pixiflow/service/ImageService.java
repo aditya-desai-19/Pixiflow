@@ -33,8 +33,7 @@ public class ImageService {
     this.customUserDetailsService = customUserDetailsService;
   }
 
-  public ResponseEntity<?> saveImage(@Valid FileUploadResponse fileUploadResponse)
-      throws UserNotFoundException {
+  public ResponseEntity<?> saveImage(@Valid FileUploadResponse fileUploadResponse) {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
       throw new UserNotFoundException("User can't be null");
@@ -71,8 +70,7 @@ public class ImageService {
         updatedAt);
   }
 
-  public ImageDetailsResponse getImageById(String id)
-      throws ImageNotFoundException, UserNotFoundException {
+  public ImageDetailsResponse getImageById(String id) {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
       throw new UserNotFoundException("User can't be null");
@@ -107,8 +105,7 @@ public class ImageService {
     return toPageResponse(images);
   }
 
-  public void deleteImages(List<String> imageIds)
-      throws UserNotFoundException, ImageListEmptyException {
+  public void deleteImages(List<String> imageIds) {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
       throw new UserNotFoundException("User can't be null");
@@ -121,8 +118,7 @@ public class ImageService {
     imageRepository.deleteImagesByImageIdsAndUserId(imageIds, user.getId());
   }
 
-  public List<String> getImagesNames(List<String> imageIds)
-      throws UserNotFoundException, ImageListEmptyException {
+  public List<String> getImagesNames(List<String> imageIds) {
     User user = customUserDetailsService.getCurrentUser();
     if (user == null) {
       throw new UserNotFoundException("User can't be null");

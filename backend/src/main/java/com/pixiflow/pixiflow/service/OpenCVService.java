@@ -12,30 +12,38 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class OpenCVService {
 
-  public byte[] resizeImage(MultipartFile file, double height, double width) throws IOException {
-    Mat image = createMatObject(file.getBytes());
+  public byte[] resizeImage(MultipartFile file, double height, double width) {
+    try {
+      Mat image = createMatObject(file.getBytes());
 
-    Mat resizedImage = new Mat();
-    Size size = new Size(width, height);
-    Imgproc.resize(image, resizedImage, size);
+      Mat resizedImage = new Mat();
+      Size size = new Size(width, height);
+      Imgproc.resize(image, resizedImage, size);
 
-    MatOfByte matOfByte = new MatOfByte();
-    String fileContentType = "." + file.getContentType().substring(6);
-    Imgcodecs.imencode(fileContentType, resizedImage, matOfByte);
+      MatOfByte matOfByte = new MatOfByte();
+      String fileContentType = "." + file.getContentType().substring(6);
+      Imgcodecs.imencode(fileContentType, resizedImage, matOfByte);
 
-    return matOfByte.toArray();
+      return matOfByte.toArray();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  private Mat createMatObject(byte[] fileBytes) throws IOException {
-    MatOfByte matOfByte = new MatOfByte(fileBytes);
+  private Mat createMatObject(byte[] fileBytes) {
+    try {
+      MatOfByte matOfByte = new MatOfByte(fileBytes);
 
-    // create mat object from input file
-    Mat image = Imgcodecs.imdecode(matOfByte, Imgcodecs.IMREAD_COLOR);
+      // create mat object from input file
+      Mat image = Imgcodecs.imdecode(matOfByte, Imgcodecs.IMREAD_COLOR);
 
-    if (image.empty()) {
-      throw new IOException("Failed to decode image from multipart file.");
+      if (image.empty()) {
+        throw new IOException("Failed to decode image from multipart file.");
+      }
+
+      return image;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
-
-    return image;
   }
 }
