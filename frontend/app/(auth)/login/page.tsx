@@ -2,12 +2,12 @@
 
 import { authClient, userClient } from "@/api/client"
 import InputGroup, {
-  InputGroupProps,
 } from "@/components/custom/pages/auth/input-group"
+import { InputGroupProps } from "@/components/custom/pages/auth/types"
 import { IconButton } from "@/components/custom/ui/button"
 import Spinner from "@/components/custom/ui/spinner"
 import { LoginUserRequest } from "@/generated"
-import { useAuthStore } from "@/zustand/authStore"
+import { useAuthStore } from "@/zustand/auth-store"
 import { useRouter } from "next/navigation"
 import { FormEvent, useRef, useState } from "react"
 

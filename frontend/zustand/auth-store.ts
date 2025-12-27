@@ -11,8 +11,8 @@ type AuthState = typeof initialState & {
 
 export const useAuthStore = create<AuthState>()((set) => ({
   ...initialState,
-  setIsLoggedIn: (val: boolean) => set((s) => ({ isLoggedIn: val })),
-  setUserName: (name: string) => set((s) => ({ userName: name })),
+  setIsLoggedIn: (val: boolean) => set(() => ({ isLoggedIn: val })),
+  setUserName: (name: string) => set(() => ({ userName: name })),
   setUserEmail: (email: string) => set((s) => ({ userEmail: email })),
   reset: () => set(initialState),
 }))

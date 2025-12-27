@@ -1,24 +1,35 @@
 "use client"
 
 import { userClient } from "@/api/client"
-import { useAuthStore } from "@/zustand/authStore"
+import { useAuthStore } from "@/zustand/auth-store"
 import { useEffect } from "react"
-
-interface AuthHandlerProps {
-  token: string | undefined
-}
+import { AuthHandlerProps } from "./types"
 
 export default function AuthHandler({ token }: AuthHandlerProps) {
-  const { setIsLoggedIn, setUserEmail, setUserName } = useAuthStore()
+  const { setIsLoggedIn, setUserEmail, setUserName, userEmail, userName } =
+    useAuthStore()
 
   useEffect(() => {
     const handleAuth = async (token: string | undefined) => {
-      setIsLoggedIn(!!token)
+      if (!token) {
+        setIsLoggedIn(false)
+        return
+      }
 
-      if (token) {
+      setIsLoggedIn(true)
+
+      try {
         const user = await userClient.getUser()
-        setUserName(user.name)
-        setUserEmail(user.email)
+
+        if (user.name !== userName) {
+          setUserName(user.name)
+        }
+        if (user.email !== userEmail) {
+          setUserEmail(user.email)
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data", error)
+        setIsLoggedIn(false)
       }
     }
 

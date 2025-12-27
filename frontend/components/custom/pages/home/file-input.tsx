@@ -1,17 +1,30 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { useAuthStore } from "@/zustand/auth-store"
 import { Image } from "lucide-react"
-import { ChangeEvent, useRef, useState } from "react"
+import { useRouter } from "next/navigation"
+import { ChangeEvent, useRef } from "react"
+import { useImageStore } from "@/zustand/image-store"
 
 export default function FileInput() {
   const inputRef = useRef<HTMLInputElement>(null)
-  const [file, setFile] = useState<File | null>(null)
+  const { isLoggedIn } = useAuthStore()
+  const {setImage} = useImageStore()
 
-  //todo
+  const router = useRouter()
+
   const onFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!isLoggedIn) {
+      router.push("/login")
+      return
+    }
+
     const selected = e.target.files?.[0] ?? null
-    setFile(selected)
+    if(selected) {
+      setImage(selected)
+      router.push("/resize")
+    }
   }
 
   return (
@@ -26,6 +39,7 @@ export default function FileInput() {
         <input
           ref={inputRef}
           type="file"
+          accept="image/*"
           className="hidden"
           onChange={onFileUpload}
         />

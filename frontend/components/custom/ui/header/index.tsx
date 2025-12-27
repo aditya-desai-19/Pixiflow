@@ -2,11 +2,11 @@
 
 import Link from "next/link"
 import { Button } from "../../../ui/button"
-import { LoaderCircle, LogOut, Menu, User } from "lucide-react"
+import { LogOut, Menu, User } from "lucide-react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { IconButton, PrimaryButton, SecondaryButton } from "../button"
-import { useAuthStore } from "@/zustand/authStore"
+import { PrimaryButton, SecondaryButton } from "../button"
+import { useAuthStore } from "@/zustand/auth-store"
 import {
   DropdownMenu,
   DropdownMenuContent,
