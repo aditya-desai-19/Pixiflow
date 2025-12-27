@@ -1,9 +1,3 @@
-
-
 export default function ImageCard() {
-  return (
-    <div>
-      {/* todo */}
-    </div>
-  )
+  return <div>{/* todo */}</div>
 }

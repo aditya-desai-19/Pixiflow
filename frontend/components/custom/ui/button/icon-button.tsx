@@ -4,10 +4,7 @@ import { IconButtonProps } from "./types"
 export default function IconButton(props: IconButtonProps) {
   return (
     <Button {...props} className={`w-full ${props.className}`}>
-      <span
-      >
-        {props.icon}
-      </span>
+      <span>{props.icon}</span>
       {props.title}
     </Button>
   )

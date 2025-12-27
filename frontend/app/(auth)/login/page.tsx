@@ -1,8 +1,7 @@
 "use client"
 
 import { authClient, userClient } from "@/api/client"
-import InputGroup, {
-} from "@/components/custom/pages/auth/input-group"
+import InputGroup from "@/components/custom/pages/auth/input-group"
 import { InputGroupProps } from "@/components/custom/pages/auth/types"
 import { IconButton } from "@/components/custom/ui/button"
 import Spinner from "@/components/custom/ui/spinner"

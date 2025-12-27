@@ -9,4 +9,4 @@ export interface SizeContainerProps {
   onLockAspectRatio: () => void
   onHeightChange: (newHeight: number) => void
   onWidthChange: (newWidth: number) => void
-} 
+}

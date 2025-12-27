@@ -1,10 +1,16 @@
-import {create} from "zustand"
+import { create } from "zustand"
 
-const initialState = {file: null as File | null, previewUrl: null as string | null, height: 0, width: 0, aspectRatio: 0}
+const initialState = {
+  file: null as File | null,
+  previewUrl: null as string | null,
+  height: 0,
+  width: 0,
+  aspectRatio: 0,
+}
 
 type ImageStore = typeof initialState & {
-  setImage: (file: File) => void,
-  clearImage: () => void,
+  setImage: (file: File) => void
+  clearImage: () => void
 }
 
 export function getImageDimensions(file: File): Promise<{
@@ -29,7 +35,6 @@ export function getImageDimensions(file: File): Promise<{
     img.src = url
   })
 }
-
 
 export const useImageStore = create<ImageStore>((set) => ({
   ...initialState,

@@ -75,7 +75,7 @@ export default function LeftSidebar() {
       )}
       <div className="my-16">
         <IconButton
-          icon={<ArrowRightFromLine className="w-6! h-6!"/>}
+          icon={<ArrowRightFromLine className="w-6! h-6!" />}
           title="Export"
           variant={"default"}
           className="bg-brand-primary p-8 text-xl hover:bg-brand-hover cursor-pointer w-full disabled:bg-brand-disabled"

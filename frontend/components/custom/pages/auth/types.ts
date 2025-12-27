@@ -9,5 +9,5 @@ export interface InputGroupProps extends React.InputHTMLAttributes<HTMLInputElem
 }
 
 export interface AuthHandlerProps {
-  token: string | undefined;
+  token: string | undefined
 }

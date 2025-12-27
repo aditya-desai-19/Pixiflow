@@ -10,7 +10,7 @@ import { useImageStore } from "@/zustand/image-store"
 export default function FileInput() {
   const inputRef = useRef<HTMLInputElement>(null)
   const { isLoggedIn } = useAuthStore()
-  const {setImage} = useImageStore()
+  const { setImage } = useImageStore()
 
   const router = useRouter()
 
@@ -21,7 +21,7 @@ export default function FileInput() {
     }
 
     const selected = e.target.files?.[0] ?? null
-    if(selected) {
+    if (selected) {
       setImage(selected)
       router.push("/resize")
     }
