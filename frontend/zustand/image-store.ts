@@ -6,11 +6,14 @@ const initialState = {
   height: 0,
   width: 0,
   aspectRatio: 0,
+  changedHeight: 0,
+  changedWidth: 0,
 }
 
 type ImageStore = typeof initialState & {
   setImage: (file: File) => void
   clearImage: () => void
+  setChangedDimensions: (width: number, height: number) => void
 }
 
 export function getImageDimensions(file: File): Promise<{
@@ -40,7 +43,9 @@ export const useImageStore = create<ImageStore>((set) => ({
   ...initialState,
   setImage: async (file) => {
     const meta = await getImageDimensions(file)
-    set({ file, ...meta })
+    set({ file, previewUrl: URL.createObjectURL(file), ...meta })
   },
   clearImage: () => set(initialState),
+  setChangedDimensions: (width, height) =>
+    set({ changedWidth: width, changedHeight: height }),
 }))

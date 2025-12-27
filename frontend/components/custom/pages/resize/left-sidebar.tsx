@@ -2,8 +2,7 @@
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import SizeContainer from "./size-container"
-import { useState } from "react"
-import PercentageContainer from "./percentage-container"
+import { useEffect, useState } from "react"
 import { IconButton } from "../../ui/button"
 import { ArrowRightFromLine } from "lucide-react"
 import { Format } from "./types"
@@ -16,6 +15,7 @@ export default function LeftSidebar() {
     aspectRatio,
     height: originalHeight,
     width: originalWidth,
+    setChangedDimensions,
   } = useImageStore()
   const [height, setHeight] = useState<number>(originalHeight)
   const [width, setWidth] = useState<number>(originalWidth)
@@ -30,20 +30,32 @@ export default function LeftSidebar() {
   }
 
   const onHeightChange = (newHeight: number) => {
+    let newWidth = width
     if (isAspectRatioLocked) {
-      const newWidth = Math.round(newHeight * aspectRatio)
+      newWidth = Math.round(newHeight * aspectRatio)
       setWidth(newWidth)
     }
     setHeight(newHeight)
+    setChangedDimensions(newWidth, newHeight)
   }
 
   const onWidthChange = (newWidth: number) => {
+    let newHeight = height
     if (isAspectRatioLocked) {
-      const newHeight = Math.round(newWidth / aspectRatio)
+      newHeight = Math.round(newWidth / aspectRatio)
       setHeight(newHeight)
     }
     setWidth(newWidth)
+    setChangedDimensions(newWidth, newHeight)
   }
+
+  useEffect(() => {
+    if (isAspectRatioLocked) {
+      const newWidth = Math.round(height * aspectRatio)
+      setWidth(newWidth)
+      setChangedDimensions(newWidth, height)
+    }
+  }, [isAspectRatioLocked])
 
   return (
     <div className="border-r-2 border-surface-tertiary h-full p-4 flex flex-col">
@@ -62,17 +74,13 @@ export default function LeftSidebar() {
           {"By percentage"}
         </ToggleGroupItem>
       </ToggleGroup>
-      {formatType === Format.Size ? (
-        <SizeContainer
-          height={height}
-          width={width}
-          onLockAspectRatio={onLockAspectRatio}
-          onHeightChange={onHeightChange}
-          onWidthChange={onWidthChange}
-        />
-      ) : (
-        <PercentageContainer />
-      )}
+      <SizeContainer
+        height={height}
+        width={width}
+        onLockAspectRatio={onLockAspectRatio}
+        onHeightChange={onHeightChange}
+        onWidthChange={onWidthChange}
+      />
       <div className="my-16">
         <IconButton
           icon={<ArrowRightFromLine className="w-6! h-6!" />}
