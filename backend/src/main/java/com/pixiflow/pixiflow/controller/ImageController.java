@@ -50,13 +50,18 @@ public class ImageController implements ImagesApi {
   }
 
   @Override
-  public ResponseEntity<String> uploadImage(MultipartFile file, Integer height, Integer width) {
+  public ResponseEntity<ImageUploadResponse> uploadImage(
+      MultipartFile file, Integer height, Integer width) {
     byte[] resizedImage = openCVService.resizeImage(file, height, width);
 
-    FileUploadResponse response = awsS3Service.uploadFile(resizedImage, file.getContentType());
+    FileUploadResponse fileUploadResponse =
+        awsS3Service.uploadFile(resizedImage, file.getContentType());
 
-    imageService.saveImage(response);
+    imageService.saveImage(fileUploadResponse);
 
-    return ResponseEntity.ok(response.fileUrl);
+    ImageUploadResponse response =
+        new ImageUploadResponse(fileUploadResponse.fileUrl, fileUploadResponse.fileName);
+
+    return ResponseEntity.ok(response);
   }
 }
