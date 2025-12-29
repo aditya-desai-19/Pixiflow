@@ -52,6 +52,10 @@ components:
           type: string
           description: "Unique identifier for the image"
           example: "img_7890abc"
+        imageName: 
+          type: string
+          description: Name of the image
+          example: "pic.jpg"
         imageUrl:
           type: string
           description: "The public URL where the image is hosted"
@@ -76,6 +80,7 @@ components:
           example: "2023-11-01T12:30:00Z"
       required:
         - imageId
+        - imageName
         - imageUrl
         - userId
         - isDeleted

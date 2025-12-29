@@ -40,9 +40,24 @@ export default function Header() {
 
   return (
     <nav className="relative flex justify-between items-center p-4 border-surface-tertiary border-b-2">
-      <Link href={"/"} className="text-2xl">
-        {"Pixiflow"}
-      </Link>
+      <div className="flex items-center gap-24">
+        <Link href={"/"} className="text-2xl">
+          {"Pixiflow"}
+        </Link>
+        {isLoggedIn && (
+          <div className="flex gap-4">
+            <Link href={"/resize"} className="text-base font-medium">
+              {"Resize"}
+            </Link>
+            <Link
+              href={"/my-images?page=0&pageSize=10"}
+              className="text-base font-medium"
+            >
+              {"My Images"}
+            </Link>
+          </div>
+        )}
+      </div>
 
       {isLoggedIn ? (
         <DropdownMenu>

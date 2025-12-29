@@ -18,7 +18,7 @@ public interface ImageRepository extends JpaRepository<Image, String> {
   Image getImageByImageId(@Param("userId") String userId, @Param("imageId") String imageId);
 
   @Query(
-      value = "SELECT i FROM Image i JOIN i.user u WHERE u.id = :userId",
+      value = "SELECT i FROM Image i JOIN i.user u WHERE u.id = :userId ORDER BY i.createdAt DESC",
       countQuery =
           "SELECT COUNT(i) FROM Image i JOIN i.user u WHERE u.id = :userId") // Define the count
   // query

@@ -42,7 +42,7 @@ export default function SizeContainer({
       <div className="flex gap-1">
         <Checkbox
           id="aspect-ratio"
-          className="border-border data-[state=checked]:bg-brand-primary data-[state=checked]:text-surface-primary data-[state=checked]:border-brand-primary"
+          className=" data-[state=checked]:bg-brand-primary data-[state=checked]:text-surface-primary data-[state=checked]:border-brand-primary"
           onCheckedChange={onLockAspectRatio}
         />
         <Label htmlFor="aspect-ratio">{"Lock aspect ratio"}</Label>

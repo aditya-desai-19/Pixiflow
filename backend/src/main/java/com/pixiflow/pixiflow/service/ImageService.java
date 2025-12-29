@@ -63,6 +63,7 @@ public class ImageService {
             : null;
     return new ImageDetailsResponse(
         image.getId(),
+        image.getName(),
         image.getImgUrl(),
         image.getUser().getId(),
         image.isDeleted(),
