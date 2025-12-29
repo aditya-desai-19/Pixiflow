@@ -11,8 +11,13 @@ import Spinner from "../../ui/spinner"
 import { imagesClient } from "@/api/client"
 import { UploadImageRequest } from "@/generated"
 import PercentageContainer from "./percentage-container"
+import CloseButton from "./close-button"
 
-export default function LeftSidebar() {
+interface ResizeSettingsProps {
+  onClose?: () => void
+}
+
+export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
   const [formatType, setFormatType] = useState<Format>(Format.Size)
 
   const {
@@ -29,6 +34,7 @@ export default function LeftSidebar() {
   const [percentage, setPercentage] = useState<number>(50)
 
   const onFormatChange = (value: Format) => {
+    if (!value) return
     setFormatType(value)
   }
 
@@ -92,8 +98,7 @@ export default function LeftSidebar() {
 
   const onPercentageChange = (newPercent: number) => {
     setPercentage(newPercent)
-    const multipler = (newPercent*2)/100
-    console.log({multipler})
+    const multipler = (newPercent * 2) / 100
     const newHeight = Math.round(originalHeight * multipler)
     const newWidth = Math.round(originalWidth * multipler)
     setChangedDimensions(newWidth, newHeight)
@@ -111,11 +116,19 @@ export default function LeftSidebar() {
   }, [originalHeight, originalWidth])
 
   return (
-    <div className="border-r-2 border-surface-tertiary h-full p-4 flex flex-col">
-      <h2 className="text-2xl font-semibold my-2">{"Resize Settings"}</h2>
+    <div className="w-full h-full p-4 flex flex-col">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-semibold my-2">{"Resize Settings"}</h2>
+        {onClose && (
+          <div className="lg:hidden">
+            <CloseButton onClose={onClose} tooltipMessage="Close" />
+          </div>
+        )}
+      </div>
+
       <ToggleGroup
         type="single"
-        className="w-full grid grid-cols-2 mt-8 mb-4 border-2 border-surface-tertiary"
+        className="w-full grid grid-cols-2 mt-8 mb-4 border-2  border-surface-tertiary"
         value={formatType}
         onValueChange={onFormatChange}
       >
@@ -127,17 +140,26 @@ export default function LeftSidebar() {
           {"As percentage"}
         </ToggleGroupItem>
       </ToggleGroup>
-      {formatType === Format.Size ? (
-        <SizeContainer
-          height={height}
-          width={width}
-          onLockAspectRatio={onLockAspectRatio}
-          onHeightChange={onHeightChange}
-          onWidthChange={onWidthChange}
-        />
-      ) : (
-        <PercentageContainer percentage={percentage} onPercentChange={onPercentageChange}/>
-      )}
+
+      <div className="w-full">
+        <div className={formatType === Format.Size ? "block" : "hidden"}>
+          <SizeContainer
+            height={height}
+            width={width}
+            onLockAspectRatio={onLockAspectRatio}
+            onHeightChange={onHeightChange}
+            onWidthChange={onWidthChange}
+          />
+        </div>
+
+        <div className={formatType === Format.Percentage ? "block" : "hidden"}>
+          <PercentageContainer
+            percentage={percentage}
+            onPercentChange={onPercentageChange}
+          />
+        </div>
+      </div>
+
       <div className="my-16">
         <IconButton
           icon={

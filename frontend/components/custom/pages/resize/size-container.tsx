@@ -13,9 +13,9 @@ export default function SizeContainer({
   onWidthChange,
 }: SizeContainerProps) {
   return (
-    <div className="flex flex-col gap-2 my-8">
+    <div className="flex flex-col gap-2 my-8 w-full">
       <div className="flex gap-2 my-2 relative">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 flex-1">
           <Label htmlFor="height">{"Height"}</Label>
           <Input
             id="height"
@@ -26,7 +26,7 @@ export default function SizeContainer({
             className="focus-visible:ring-brand-primary focus-visible:ring-1"
           />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 flex-1">
           <Label htmlFor="width">{"Width"}</Label>
           <Input
             id="width"

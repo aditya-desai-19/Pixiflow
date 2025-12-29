@@ -5,8 +5,8 @@ export default function PrimaryButton(props: ButtonProps) {
   return (
     <Button
       variant={"default"}
-      className="bg-brand-primary hover:bg-brand-hover cursor-pointer w-full"
       {...props}
+      className={`bg-brand-primary hover:bg-brand-hover cursor-pointer w-full ${props.className}`}
     >
       {props.title}
     </Button>

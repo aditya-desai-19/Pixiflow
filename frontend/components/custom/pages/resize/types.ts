@@ -15,3 +15,8 @@ export interface PercentageContainerProps {
   percentage: number
   onPercentChange: (num: number) => void
 }
+
+export interface CloseButtonProps {
+  onClose: () => void
+  tooltipMessage: string
+}

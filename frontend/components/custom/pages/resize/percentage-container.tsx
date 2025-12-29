@@ -7,9 +7,9 @@ export default function PercentageContainer({
   onPercentChange,
 }: PercentageContainerProps) {
   return (
-    <div className="my-8 flex flex-col gap-2">
+    <div className="my-8 flex flex-col gap-2 w-full">
       <Label htmlFor="percentage">{"Size"}</Label>
-      <div className="border-2 border-surface-tertiary p-4 flex justify-center items-center gap-2  rounded-lg">
+      <div className="border-2 border-surface-tertiary p-4 flex justify-center items-center gap-2 rounded-lg">
         <Slider
           id={"percentage"}
           step={1}

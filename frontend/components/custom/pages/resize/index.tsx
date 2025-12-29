@@ -1,2 +1,2 @@
-export { default as LeftSidebar } from "./left-sidebar"
+export { default as ResizeSettings } from "./resize-settings"
 export { default as ImageContent } from "./image-content"
