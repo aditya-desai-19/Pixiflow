@@ -23,6 +23,7 @@ export default function SizeContainer({
             min={0}
             value={height}
             onChange={(e) => onHeightChange(parseInt(e.target.value) || 0)}
+            className="focus-visible:ring-brand-primary focus-visible:ring-1"
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -33,6 +34,7 @@ export default function SizeContainer({
             min={0}
             value={width}
             onChange={(e) => onWidthChange(parseInt(e.target.value) || 0)}
+            className="focus-visible:ring-brand-primary focus-visible:ring-1"
           />
         </div>
         <span className="absolute right-1 top-[-4]">{"px"}</span>

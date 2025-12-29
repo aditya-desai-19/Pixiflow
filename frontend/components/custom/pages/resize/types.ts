@@ -10,3 +10,8 @@ export interface SizeContainerProps {
   onHeightChange: (newHeight: number) => void
   onWidthChange: (newWidth: number) => void
 }
+
+export interface PercentageContainerProps {
+  percentage: number
+  onPercentChange: (num: number) => void
+}

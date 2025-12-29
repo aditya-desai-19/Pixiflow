@@ -10,6 +10,7 @@ import { useImageStore } from "@/zustand/image-store"
 import Spinner from "../../ui/spinner"
 import { imagesClient } from "@/api/client"
 import { UploadImageRequest } from "@/generated"
+import PercentageContainer from "./percentage-container"
 
 export default function LeftSidebar() {
   const [formatType, setFormatType] = useState<Format>(Format.Size)
@@ -19,12 +20,13 @@ export default function LeftSidebar() {
     aspectRatio,
     height: originalHeight,
     width: originalWidth,
+    changedHeight: height,
+    changedWidth: width,
     setChangedDimensions,
   } = useImageStore()
-  const [height, setHeight] = useState<number>(originalHeight)
-  const [width, setWidth] = useState<number>(originalWidth)
   const [isAspectRatioLocked, setIsAspectRatioLocked] = useState<boolean>(false)
   const [isExporting, setIsExporting] = useState<boolean>(false)
+  const [percentage, setPercentage] = useState<number>(50)
 
   const onFormatChange = (value: Format) => {
     setFormatType(value)
@@ -38,9 +40,7 @@ export default function LeftSidebar() {
     let newWidth = width
     if (isAspectRatioLocked) {
       newWidth = Math.round(newHeight * aspectRatio)
-      setWidth(newWidth)
     }
-    setHeight(newHeight)
     setChangedDimensions(newWidth, newHeight)
   }
 
@@ -48,9 +48,7 @@ export default function LeftSidebar() {
     let newHeight = height
     if (isAspectRatioLocked) {
       newHeight = Math.round(newWidth / aspectRatio)
-      setHeight(newHeight)
     }
-    setWidth(newWidth)
     setChangedDimensions(newWidth, newHeight)
   }
 
@@ -92,24 +90,30 @@ export default function LeftSidebar() {
     }
   }
 
+  const onPercentageChange = (newPercent: number) => {
+    setPercentage(newPercent)
+    const multipler = (newPercent*2)/100
+    console.log({multipler})
+    const newHeight = Math.round(originalHeight * multipler)
+    const newWidth = Math.round(originalWidth * multipler)
+    setChangedDimensions(newWidth, newHeight)
+  }
+
   useEffect(() => {
     if (isAspectRatioLocked) {
       const newWidth = Math.round(height * aspectRatio)
-      setWidth(newWidth)
       setChangedDimensions(newWidth, height)
     }
   }, [isAspectRatioLocked])
 
   useEffect(() => {
-    setHeight(originalHeight)
-    setWidth(originalWidth)
     setChangedDimensions(originalWidth, originalHeight)
   }, [originalHeight, originalWidth])
 
   return (
     <div className="border-r-2 border-surface-tertiary h-full p-4 flex flex-col">
       <h2 className="text-2xl font-semibold my-2">{"Resize Settings"}</h2>
-      {/* <ToggleGroup
+      <ToggleGroup
         type="single"
         className="w-full grid grid-cols-2 mt-8 mb-4 border-2 border-surface-tertiary"
         value={formatType}
@@ -119,17 +123,21 @@ export default function LeftSidebar() {
           {"By size"}
         </ToggleGroupItem>
 
-        <ToggleGroupItem value="percentage" className="w-full" disabled>
-          {"By percentage"}
+        <ToggleGroupItem value="percentage" className="w-full">
+          {"As percentage"}
         </ToggleGroupItem>
-      </ToggleGroup> */}
-      <SizeContainer
-        height={height}
-        width={width}
-        onLockAspectRatio={onLockAspectRatio}
-        onHeightChange={onHeightChange}
-        onWidthChange={onWidthChange}
-      />
+      </ToggleGroup>
+      {formatType === Format.Size ? (
+        <SizeContainer
+          height={height}
+          width={width}
+          onLockAspectRatio={onLockAspectRatio}
+          onHeightChange={onHeightChange}
+          onWidthChange={onWidthChange}
+        />
+      ) : (
+        <PercentageContainer percentage={percentage} onPercentChange={onPercentageChange}/>
+      )}
       <div className="my-16">
         <IconButton
           icon={
