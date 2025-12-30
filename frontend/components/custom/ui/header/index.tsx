@@ -46,12 +46,12 @@ export default function Header() {
         </Link>
         {isLoggedIn && (
           <div className="flex gap-4">
-            <Link href={"/resize"} className="text-base font-medium">
+            <Link href={"/resize"} className="text-sm">
               {"Resize"}
             </Link>
             <Link
-              href={"/my-images?page=0&pageSize=10"}
-              className="text-base font-medium"
+              href={"/my-images"}
+              className="text-sm"
             >
               {"My Images"}
             </Link>

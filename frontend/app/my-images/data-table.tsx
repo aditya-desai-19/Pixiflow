@@ -4,15 +4,6 @@ import { imagesClient } from "@/api/client"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
-import {
   Table,
   TableBody,
   TableCell,
@@ -21,25 +12,32 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { GetAllImagesRequest, ImageDetailsResponse } from "@/generated"
-import { Delete, Download, Image, Trash } from "lucide-react"
+import { Download, Image, Trash } from "lucide-react"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import dayjs from "dayjs"
 import { Button } from "@/components/ui/button"
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
+import Spinner from "@/components/custom/ui/spinner"
 
 export default function DataTable() {
+  const searchParams = useSearchParams()
+
   const [imageData, setImageData] = useState<ImageDetailsResponse[]>([])
   const [totalPages, setTotalPages] = useState<number>(0)
-
-  const searchParams = useSearchParams()
-  const currentPage = parseInt(searchParams.get("page") || "-1", 10)
-  const pageSize = parseInt(searchParams.get("pageSize") || "-1", 10)
-  const windowSize = 3
-
-  const startPage = Math.floor(currentPage / windowSize) * windowSize
-  const endPage = Math.min(startPage + windowSize, totalPages)
+  const [isFetchingData, setIsFetchingData] = useState<boolean>(false)
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 1,
+  })
 
   const fetchData = async (page: number, pageSize: number) => {
+    setIsFetchingData(true)
     try {
       const body: GetAllImagesRequest = {
         page: page,
@@ -50,146 +48,188 @@ export default function DataTable() {
       setTotalPages(data.totalPages ?? 0)
     } catch (error) {
       console.log("Some error occured while fetching images ", error)
+    } finally {
+      setIsFetchingData(false)
     }
   }
 
+  const columns: ColumnDef<ImageDetailsResponse>[] = useMemo(
+    () => [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "image",
+        header: () => <div className="w-[75%] text-center">{"Image"}</div>,
+        cell: ({ row }) => {
+          const data = row.original
+          return (
+            <div className="w-[75%] flex gap-2 items-center flex-2">
+              <Avatar className="rounded-sm">
+                <AvatarImage src={data.imageUrl} alt={data.imageName} />
+                <AvatarFallback className="text-xs">
+                  <Image />
+                </AvatarFallback>
+              </Avatar>
+              <span>{data.imageName}</span>
+            </div>
+          )
+        },
+      },
+      {
+        accessorKey: "createdAt",
+        header: "Created At",
+        cell: ({ row }) => (
+          <div className="flex-1">
+            <span>{dayjs(row.original.createdAt).format("D MMM YYYY")}</span>
+          </div>
+        ),
+      },
+      {
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => {
+          return (
+            <div className="flex-1 flex gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
+                aria-label={`product-${row.original.imageId}-delete`}
+              >
+                <Trash />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
+                aria-label={`product-${row.original.imageId}-delete`}
+              >
+                <Download />
+              </Button>
+            </div>
+          )
+        },
+      },
+    ],
+    []
+  )
+
+  const table = useReactTable({
+    columns,
+    data: imageData,
+    getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
+    pageCount: totalPages,
+    state: {
+      pagination: pagination,
+    },
+    onPaginationChange: setPagination,
+  })
+
   useEffect(() => {
-    if (currentPage >= 0 && pageSize > 0) {
-      fetchData(currentPage, pageSize)
-    }
-  }, [currentPage, pageSize])
+    const { pageIndex, pageSize } = pagination
+    fetchData(pageIndex, pageSize)
+  }, [pagination])
 
   return (
     <div className="overflow-hidden rounded-md border">
       <Table>
         <TableHeader>
-          <TableHead>
-            <Checkbox
-              aria-label="select-all"
-              className=" data-[state=checked]:bg-brand-primary data-[state=checked]:text-surface-primary data-[state=checked]:border-brand-primary"
-            />
-          </TableHead>
-          <TableHead className="flex-2">{"Image"}</TableHead>
-          <TableHead className="flex-1">{"Created at"}</TableHead>
-          <TableHead className="flex-1">{"Action"}</TableHead>
-        </TableHeader>
-        <TableBody>
-          {imageData.map((item) => (
-            <TableRow key={item.imageId}>
-              <TableCell>
-                <Checkbox
-                  id={`table-checkbox-${item.imageId}`}
-                  aria-label={`product-checkbox-${item.imageId}`}
-                  className=" data-[state=checked]:bg-brand-primary data-[state=checked]:text-surface-primary data-[state=checked]:border-brand-primary"
-                />
-              </TableCell>
-              <TableCell className="flex gap-2 items-center flex-2">
-                <Avatar className="rounded-sm">
-                  <AvatarImage src={item.imageUrl} alt={item.imageName} />
-                  <AvatarFallback className="text-xs">
-                    <Image />
-                  </AvatarFallback>
-                </Avatar>
-                <span>{item.imageName}</span>
-              </TableCell>
-              <TableCell className="flex-1">
-                <span>{dayjs(item.createdAt).format("D MMM YYYY")}</span>
-              </TableCell>
-              <TableCell className="flex-1 flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full"
-                  aria-label={`product-${item.imageId}-delete`}
-                >
-                  <Trash />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full"
-                  aria-label={`product-${item.imageId}-delete`}
-                >
-                  <Download />
-                </Button>
-              </TableCell>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
             </TableRow>
           ))}
+        </TableHeader>
+        <TableBody className="relative">
+          {!isFetchingData &&
+            (table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  {"No results."}
+                </TableCell>
+              </TableRow>
+            ))}
+          {isFetchingData && (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+                  <Spinner className="h-12 w-12" />
+                </div>
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
-      <Pagination>
-        <PaginationContent>
-          {/* PREVIOUS */}
-          <PaginationItem>
-            <PaginationPrevious
-              href={`/my-images?page=${Math.max(currentPage - 1, 0)}&pageSize=${pageSize}`}
-              aria-disabled={currentPage === 0}
-              className={
-                currentPage === 0 ? "pointer-events-none opacity-50" : undefined
-              }
-            />
-          </PaginationItem>
-
-          {/* FIRST + ELLIPSIS */}
-          {startPage > 0 && (
-            <>
-              <PaginationItem>
-                <PaginationLink href={`/my-images?page=0&pageSize=${pageSize}`}>
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            </>
-          )}
-
-          {/* WINDOW */}
-          {Array.from({ length: endPage - startPage }, (_, i) => {
-            const page = startPage + i
-
-            return (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  href={`/my-images?page=${page}&pageSize=${pageSize}`}
-                  isActive={page === currentPage}
-                >
-                  {page + 1}
-                </PaginationLink>
-              </PaginationItem>
-            )
-          })}
-
-          {/* ELLIPSIS + LAST */}
-          {endPage < totalPages && (
-            <>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink
-                  href={`/my-images?page=${totalPages - 1}&pageSize=${pageSize}`}
-                >
-                  {totalPages}
-                </PaginationLink>
-              </PaginationItem>
-            </>
-          )}
-
-          {/* NEXT */}
-          <PaginationItem>
-            <PaginationNext
-              href={`/my-images?page=${Math.min(currentPage + 1, totalPages - 1)}&pageSize=${pageSize}`}
-              aria-disabled={currentPage === totalPages - 1}
-              className={
-                currentPage === totalPages - 1
-                  ? "pointer-events-none opacity-50"
-                  : undefined
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      <div className="flex justify-center items-center">
+        <div className="flex gap-4 items-center my-4">
+          <Button
+            variant={"outline"}
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {"Previous"}
+          </Button>
+          <span>{`${pagination.pageIndex + 1} of ${totalPages}`}</span>
+          <Button
+            variant={"outline"}
+            onClick={() => {
+              console.log("clicked")
+              table.nextPage()
+            }}
+            disabled={!table.getCanNextPage()}
+          >
+            {"Next"}
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }
