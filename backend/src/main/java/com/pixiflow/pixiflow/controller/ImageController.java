@@ -28,13 +28,14 @@ public class ImageController implements ImagesApi {
   }
 
   @Override
-  public ResponseEntity<String> deleteImagesByIds(DeleteImagesRequest deleteImagesRequest) {
+  public ResponseEntity<GenericResponse> deleteImagesByIds(
+      DeleteImagesRequest deleteImagesRequest) {
     List<String> imagesNames = imageService.getImagesNames(deleteImagesRequest.getImageIds());
 
     awsS3Service.deleteObjects(imagesNames);
     imageService.deleteImages(deleteImagesRequest.getImageIds());
 
-    return ResponseEntity.ok("Successfully deleted images");
+    return ResponseEntity.ok(new GenericResponse("Successfully deleted images"));
   }
 
   @Override

@@ -11,9 +11,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { GetAllImagesRequest, ImageDetailsResponse } from "@/generated"
+import {
+  DeleteImagesByIdsRequest,
+  GetAllImagesRequest,
+  ImageDetailsResponse,
+} from "@/generated"
 import { Download, Image, Trash } from "lucide-react"
-import { useSearchParams } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import dayjs from "dayjs"
 import { Button } from "@/components/ui/button"
@@ -21,20 +24,33 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  PaginationState,
   useReactTable,
 } from "@tanstack/react-table"
 import Spinner from "@/components/custom/ui/spinner"
+import { downloadImage } from "@/utils/download-image"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 export default function DataTable() {
-  const searchParams = useSearchParams()
-
   const [imageData, setImageData] = useState<ImageDetailsResponse[]>([])
   const [totalPages, setTotalPages] = useState<number>(0)
   const [isFetchingData, setIsFetchingData] = useState<boolean>(false)
-  const [pagination, setPagination] = useState({
+  const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 1,
+    pageSize: 10,
   })
+  const [isMultiSelect, setIsMultiSelect] = useState<boolean>(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
 
   const fetchData = async (page: number, pageSize: number) => {
     setIsFetchingData(true)
@@ -53,16 +69,21 @@ export default function DataTable() {
     }
   }
 
+  const onDownload = async (imageUrl: string, imageName: string) => {
+    try {
+      await downloadImage(imageUrl, imageName)
+    } catch (error) {
+      console.error("Some error occured while downloading image ", error)
+    }
+  }
+
   const columns: ColumnDef<ImageDetailsResponse>[] = useMemo(
     () => [
       {
         id: "select",
         header: ({ table }) => (
           <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
+            checked={table.getIsAllPageRowsSelected()}
             onCheckedChange={(value) =>
               table.toggleAllPageRowsSelected(!!value)
             }
@@ -117,6 +138,7 @@ export default function DataTable() {
                 size="icon"
                 className="rounded-full"
                 aria-label={`product-${row.original.imageId}-delete`}
+                onClick={() => setShowDeleteDialog(true)}
               >
                 <Trash />
               </Button>
@@ -124,7 +146,11 @@ export default function DataTable() {
                 variant="ghost"
                 size="icon"
                 className="rounded-full"
-                aria-label={`product-${row.original.imageId}-delete`}
+                aria-label={`product-${row.original.imageId}-download`}
+                disabled={isMultiSelect || !row.getIsSelected()}
+                onClick={() =>
+                  onDownload(row.original.imageUrl, row.original.imageName)
+                }
               >
                 <Download />
               </Button>
@@ -133,7 +159,7 @@ export default function DataTable() {
         },
       },
     ],
-    []
+    [isMultiSelect, onDownload]
   )
 
   const table = useReactTable({
@@ -148,13 +174,69 @@ export default function DataTable() {
     onPaginationChange: setPagination,
   })
 
+  const selectedIds = table
+    .getSelectedRowModel()
+    .rows.map((row) => row.original.imageId)
+
+  const selectedImageNames = table
+    .getSelectedRowModel()
+    .rows.map((row) => row.original.imageName)
+
+  const onDeleteConfirm = async () => {
+    if (selectedIds.length == 0) return
+
+    try {
+      const body: DeleteImagesByIdsRequest = {
+        deleteImagesRequest: {
+          imageIds: selectedIds,
+        },
+      }
+      await imagesClient.deleteImagesByIds(body)
+      //todo: improve
+      if (pagination.pageIndex == 0) {
+        await fetchData(0, 10)
+      } else {
+        setPagination({
+          pageIndex: 0,
+          pageSize: 10,
+        })
+      }
+    } catch (error) {
+      console.error("Some error occured while deleting", error)
+    }
+  }
+
   useEffect(() => {
     const { pageIndex, pageSize } = pagination
     fetchData(pageIndex, pageSize)
   }, [pagination])
 
+  useEffect(() => {
+    setIsMultiSelect(selectedIds.length > 1)
+  }, [selectedIds])
+
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className="relative rounded-md border">
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete
+              {selectedImageNames.map((imgName, i) => (
+                <b key={imgName + i}>{imgName} </b>
+              ))}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={onDeleteConfirm}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

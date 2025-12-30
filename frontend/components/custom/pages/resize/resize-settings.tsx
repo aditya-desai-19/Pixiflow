@@ -12,6 +12,7 @@ import { imagesClient } from "@/api/client"
 import { UploadImageRequest } from "@/generated"
 import PercentageContainer from "./percentage-container"
 import CloseButton from "./close-button"
+import { downloadImage } from "@/utils/download-image"
 
 interface ResizeSettingsProps {
   onClose?: () => void
@@ -56,22 +57,6 @@ export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
       newHeight = Math.round(newWidth / aspectRatio)
     }
     setChangedDimensions(newWidth, newHeight)
-  }
-
-  const downloadImage = async (imageUrl: string, imageName: string) => {
-    const response = await fetch(imageUrl)
-    const blob = await response.blob()
-
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement("a")
-
-    a.href = url
-    a.download = imageName
-    document.body.appendChild(a)
-    a.click()
-
-    a.remove()
-    window.URL.revokeObjectURL(url)
   }
 
   const onExport = async () => {

@@ -49,10 +49,7 @@ export default function Header() {
             <Link href={"/resize"} className="text-sm">
               {"Resize"}
             </Link>
-            <Link
-              href={"/my-images"}
-              className="text-sm"
-            >
+            <Link href={"/my-images"} className="text-sm">
               {"My Images"}
             </Link>
           </div>

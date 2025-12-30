@@ -28,6 +28,8 @@ components:
       properties:
         message:
           type: string
+      required:
+        - message
           
     RegisterRequest:
       type: object
@@ -291,7 +293,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: "#/components/schemas/GenericResponse"
         '400':
           description: Bad request
           content:
