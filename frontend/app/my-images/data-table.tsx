@@ -31,12 +31,10 @@ export default function DataTable() {
   const [imageData, setImageData] = useState<ImageDetailsResponse[]>([])
   const [totalPages, setTotalPages] = useState<number>(0)
 
-  const windowSize = 3
-  const startPageRef = useRef<number>(0)
-
   const searchParams = useSearchParams()
   const currentPage = parseInt(searchParams.get("page") || "-1", 10)
   const pageSize = parseInt(searchParams.get("pageSize") || "-1", 10)
+  const windowSize = 3
 
   const startPage = Math.floor(currentPage / windowSize) * windowSize
   const endPage = Math.min(startPage + windowSize, totalPages)
@@ -121,25 +119,40 @@ export default function DataTable() {
       </Table>
       <Pagination>
         <PaginationContent>
+          {/* PREVIOUS */}
           <PaginationItem>
             <PaginationPrevious
-              href={`/my-images?page=${currentPage - 1}&pageSize=${pageSize}`}
+              href={`/my-images?page=${Math.max(currentPage - 1, 0)}&pageSize=${pageSize}`}
+              aria-disabled={currentPage === 0}
+              className={
+                currentPage === 0 ? "pointer-events-none opacity-50" : undefined
+              }
             />
           </PaginationItem>
+
+          {/* FIRST + ELLIPSIS */}
+          {startPage > 0 && (
+            <>
+              <PaginationItem>
+                <PaginationLink href={`/my-images?page=0&pageSize=${pageSize}`}>
+                  1
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            </>
+          )}
+
+          {/* WINDOW */}
           {Array.from({ length: endPage - startPage }, (_, i) => {
-            const page = startPageRef.current + i
+            const page = startPage + i
 
             return (
               <PaginationItem key={page}>
                 <PaginationLink
                   href={`/my-images?page=${page}&pageSize=${pageSize}`}
                   isActive={page === currentPage}
-                  onClick={() => {
-                    if (i === windowSize - 1) {
-                      startPageRef.current =
-                        startPageRef.current + windowSize - 1
-                    }
-                  }}
                 >
                   {page + 1}
                 </PaginationLink>
@@ -147,14 +160,32 @@ export default function DataTable() {
             )
           })}
 
-          {startPageRef.current + windowSize < totalPages && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
+          {/* ELLIPSIS + LAST */}
+          {endPage < totalPages && (
+            <>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink
+                  href={`/my-images?page=${totalPages - 1}&pageSize=${pageSize}`}
+                >
+                  {totalPages}
+                </PaginationLink>
+              </PaginationItem>
+            </>
           )}
+
+          {/* NEXT */}
           <PaginationItem>
             <PaginationNext
-              href={`/my-images?page=${currentPage + 1}&pageSize=${pageSize}`}
+              href={`/my-images?page=${Math.min(currentPage + 1, totalPages - 1)}&pageSize=${pageSize}`}
+              aria-disabled={currentPage === totalPages - 1}
+              className={
+                currentPage === totalPages - 1
+                  ? "pointer-events-none opacity-50"
+                  : undefined
+              }
             />
           </PaginationItem>
         </PaginationContent>
