@@ -231,7 +231,7 @@ export default function DataTable() {
 
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={onDeleteConfirm}>
+            <AlertDialogAction onClick={onDeleteConfirm} className="bg-brand-primary hover:bg-brand-hover cursor-pointer">
               Continue
             </AlertDialogAction>
           </AlertDialogFooter>
