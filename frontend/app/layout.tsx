@@ -4,6 +4,7 @@ import "./globals.css"
 import Header from "@/components/custom/ui/header"
 import { cookies } from "next/headers"
 import AuthHandler from "@/components/custom/pages/auth/auth-handler"
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,7 +30,8 @@ export default async function RootLayout({
         <div className="flex flex-col h-screen lg:mx-10">
           <AuthHandler token={accessToken} />
           <Header />
-          {children}
+          <main>{children}</main>
+          <Toaster />
         </div>
       </body>
     </html>

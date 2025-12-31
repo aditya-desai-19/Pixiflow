@@ -9,6 +9,7 @@ import { LoginUserRequest } from "@/generated"
 import { useAuthStore } from "@/zustand/auth-store"
 import { useRouter } from "next/navigation"
 import { FormEvent, useRef, useState } from "react"
+import { toast } from "sonner"
 
 export default function Login() {
   const [emailError, setEmailError] = useState<string>("")
@@ -48,7 +49,6 @@ export default function Login() {
           password,
         },
       }
-
       await authClient.loginUser(body)
 
       const user = await userClient.getUser()
@@ -60,6 +60,10 @@ export default function Login() {
       router.replace("/")
     } catch (e) {
       console.error("Some error occured while login ", e)
+      toast.error("Some error occured while login", {
+        className: "text-white! bg-red-500!",
+        position: "bottom-left",
+      })
     } finally {
       setIsLoggingIn(false)
     }

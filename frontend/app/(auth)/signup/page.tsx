@@ -1,14 +1,14 @@
 "use client"
 
 import { authClient } from "@/api/client"
-import InputGroup, {
-  InputGroupProps,
-} from "@/components/custom/pages/auth/input-group"
+import InputGroup from "@/components/custom/pages/auth/input-group"
+import { InputGroupProps } from "@/components/custom/pages/auth/types"
 import { IconButton } from "@/components/custom/ui/button"
 import Spinner from "@/components/custom/ui/spinner"
 import { RegisterUserRequest } from "@/generated"
 import { useRouter } from "next/navigation"
 import { FormEvent, useRef, useState } from "react"
+import { toast } from "sonner"
 
 export default function SignUp() {
   const [nameError, setNameError] = useState<string>("")
@@ -72,6 +72,10 @@ export default function SignUp() {
       router.push("/login")
     } catch (e) {
       console.error("Some error occured while signing up ", e)
+      toast.error("Some error occured while signing up", {
+        className: "text-white! bg-red-500!",
+        position: "bottom-left",
+      })
     } finally {
       setIsSigningUp(false)
     }

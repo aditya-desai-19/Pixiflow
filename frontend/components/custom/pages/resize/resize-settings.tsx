@@ -13,6 +13,7 @@ import { UploadImageRequest } from "@/generated"
 import PercentageContainer from "./percentage-container"
 import CloseButton from "./close-button"
 import { downloadImage } from "@/utils/download-image"
+import { toast } from "sonner"
 
 interface ResizeSettingsProps {
   onClose?: () => void
@@ -76,6 +77,10 @@ export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
       await downloadImage(res.imageUrl, res.imageName)
     } catch (e) {
       console.error("Error exporting image:", e)
+      toast.error("Some error occured while exporting image", {
+        className: "text-white! bg-red-500!",
+        position: "bottom-left",
+      })
     } finally {
       setIsExporting(false)
     }

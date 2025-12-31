@@ -40,6 +40,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { toast } from "sonner"
 
 export default function DataTable() {
   const [imageData, setImageData] = useState<ImageDetailsResponse[]>([])
@@ -69,6 +70,10 @@ export default function DataTable() {
       setTotalPages(data.totalPages ?? 0)
     } catch (error) {
       console.log("Some error occured while fetching images ", error)
+      toast.error("Some error occured while exporting image", {
+        className: "text-white! bg-red-500!",
+        position: "bottom-left",
+      })
     } finally {
       setIsFetchingData(false)
     }
@@ -79,6 +84,10 @@ export default function DataTable() {
       await downloadImage(imageUrl, imageName)
     } catch (error) {
       console.error("Some error occured while downloading image ", error)
+      toast.error("Some error occured while downloading image", {
+        className: "text-white! bg-red-500!",
+        position: "bottom-left",
+      })
     }
   }
 
@@ -223,6 +232,10 @@ export default function DataTable() {
       }
     } catch (error) {
       console.error("Some error occured while deleting", error)
+      toast.error("Some error occured while deleting", {
+        className: "text-white! bg-red-500!",
+        position: "bottom-left",
+      })
     }
   }
 
