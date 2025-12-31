@@ -40,7 +40,7 @@ export default function Header() {
 
   return (
     <nav className="relative flex justify-between items-center p-4 border-surface-tertiary border-b-2">
-      <div className="flex items-center gap-24">
+      <div className="flex items-center gap-2 md:gap-24">
         <Link href={"/"} className="text-2xl">
           {"Pixiflow"}
         </Link>

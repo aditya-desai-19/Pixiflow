@@ -38,8 +38,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 
 export default function DataTable() {
   const [imageData, setImageData] = useState<ImageDetailsResponse[]>([])
@@ -51,6 +51,11 @@ export default function DataTable() {
   })
   const [isMultiSelect, setIsMultiSelect] = useState<boolean>(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
+  const [showViewDialog, setShowViewDialog] = useState<boolean>(false)
+  const [currentImageDetails, setCurrentImageDetails] = useState({
+    imageUrl: "",
+    imageName: "",
+  })
 
   const fetchData = async (page: number, pageSize: number) => {
     setIsFetchingData(true)
@@ -75,6 +80,14 @@ export default function DataTable() {
     } catch (error) {
       console.error("Some error occured while downloading image ", error)
     }
+  }
+
+  const onView = (imageUrl: string, imageName: string) => {
+    setCurrentImageDetails({
+      imageName,
+      imageUrl,
+    })
+    setShowViewDialog(true)
   }
 
   const columns: ColumnDef<ImageDetailsResponse>[] = useMemo(
@@ -113,7 +126,14 @@ export default function DataTable() {
                   <Image />
                 </AvatarFallback>
               </Avatar>
-              <span>{data.imageName}</span>
+              <span
+                className="hover:text-brand-primary hover:cursor-pointer"
+                onClick={() =>
+                  onView(row.original.imageUrl, row.original.imageName)
+                }
+              >
+                {data.imageName}
+              </span>
             </div>
           )
         },
@@ -220,9 +240,9 @@ export default function DataTable() {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>{"Are you absolutely sure?"}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete
+              {"This action cannot be undone. This will permanently delete"}
               {selectedImageNames.map((imgName, i) => (
                 <b key={imgName + i}>{imgName} </b>
               ))}
@@ -230,13 +250,28 @@ export default function DataTable() {
           </AlertDialogHeader>
 
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={onDeleteConfirm} className="bg-brand-primary hover:bg-brand-hover cursor-pointer">
-              Continue
+            <AlertDialogCancel>{"Cancel"}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={onDeleteConfirm}
+              className="bg-brand-primary hover:bg-brand-hover cursor-pointer"
+            >
+              {"Continue"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <Dialog open={showViewDialog} onOpenChange={setShowViewDialog}>
+        <DialogContent>
+          <DialogTitle>{currentImageDetails.imageName}</DialogTitle>
+          <div className="flex justify-center">
+            <img
+              src={currentImageDetails.imageUrl}
+              className="h-60 object-contain"
+              alt="current-image-url"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
