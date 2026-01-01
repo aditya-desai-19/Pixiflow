@@ -1,4 +1,5 @@
-import { ImageContent, ResizeSettings } from "@/components/custom/pages/resize"
+import ImageContent from "./image-content"
+import ResizeSettings from "./resize-settings"
 
 export default function Resize() {
   return (

@@ -93,8 +93,8 @@ export default function Login() {
   ]
 
   return (
-    <div className="flex-1 flex h-screen justify-center items-center">
-      <div className="flex flex-col gap-3 border-2 p-6 shadow-lg rounded-lg w-1/4">
+    <div className="flex-1 flex h-screen w-full justify-center items-center">
+      <div className="flex flex-col gap-3 border-2 p-6 shadow-lg rounded-lg w-2/3 lg:w-1/3">
         <h1 className="text-2xl text-center font-semibold">{"Login"}</h1>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-2">
@@ -111,7 +111,7 @@ export default function Login() {
                 ) : null
               }
               title="Login"
-              className="bg-brand-primary hover:bg-brand-hover cursor-pointer w-full disabled:bg-brand-disabled"
+              className="cursor-pointer w-full"
               disabled={isLoggingIn}
             />
           </div>

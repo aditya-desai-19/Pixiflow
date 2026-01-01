@@ -167,6 +167,7 @@ export default function DataTable() {
                 size="icon"
                 className="rounded-full"
                 aria-label={`product-${row.original.imageId}-delete`}
+                disabled={!row.getIsSelected()}
                 onClick={() => setShowDeleteDialog(true)}
               >
                 <Trash />
@@ -255,7 +256,7 @@ export default function DataTable() {
           <AlertDialogHeader>
             <AlertDialogTitle>{"Are you absolutely sure?"}</AlertDialogTitle>
             <AlertDialogDescription>
-              {"This action cannot be undone. This will permanently delete"}
+              {"This action cannot be undone. This will permanently delete "}
               {selectedImageNames.map((imgName, i) => (
                 <b key={imgName + i}>{imgName} </b>
               ))}
@@ -266,7 +267,7 @@ export default function DataTable() {
             <AlertDialogCancel>{"Cancel"}</AlertDialogCancel>
             <AlertDialogAction
               onClick={onDeleteConfirm}
-              className="bg-brand-primary hover:bg-brand-hover cursor-pointer"
+              className="cursor-pointer"
             >
               {"Continue"}
             </AlertDialogAction>

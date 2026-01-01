@@ -1,9 +1,9 @@
 import { useImageStore } from "@/zustand/image-store"
 import { useRef } from "react"
-import { IconButton } from "../../ui/button"
 import { Image } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useAuthStore } from "@/zustand/auth-store"
+import { IconButton } from "@/components/custom/ui/button"
 
 export default function FileInput() {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -38,9 +38,9 @@ export default function FileInput() {
           title="Select file"
           variant={"default"}
           onClick={() => inputRef.current?.click()}
-          className="bg-brand-primary w-full p-8 text-xl hover:bg-brand-hover cursor-pointer "
+          className="w-full p-8 text-xl cursor-pointer"
         />
-        <span className="text-sm text-primary">{"Max file size: 5 MB"}</span>
+        <span className="text-sm">{"Max file size: 5 MB"}</span>
       </div>
     </div>
   )

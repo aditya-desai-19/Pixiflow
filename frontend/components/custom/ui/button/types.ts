@@ -2,10 +2,6 @@ import { ReactNode } from "react"
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement>
 
-export interface ButtonProps extends Props {
-  title: string
-}
-
 type ButtonVariant =
   | "link"
   | "default"

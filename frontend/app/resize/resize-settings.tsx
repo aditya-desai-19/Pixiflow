@@ -3,17 +3,17 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import SizeContainer from "./size-container"
 import { useEffect, useState } from "react"
-import { IconButton } from "../../ui/button"
 import { ArrowRightFromLine } from "lucide-react"
 import { Format } from "./types"
 import { useImageStore } from "@/zustand/image-store"
-import Spinner from "../../ui/spinner"
 import { imagesClient } from "@/api/client"
 import { UploadImageRequest } from "@/generated"
 import PercentageContainer from "./percentage-container"
 import CloseButton from "./close-button"
 import { downloadImage } from "@/utils/download-image"
 import { toast } from "sonner"
+import { IconButton } from "@/components/custom/ui/button"
+import Spinner from "@/components/custom/ui/spinner"
 
 interface ResizeSettingsProps {
   onClose?: () => void
@@ -118,15 +118,15 @@ export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
 
       <ToggleGroup
         type="single"
-        className="w-full grid grid-cols-2 mt-8 mb-4 border-2  border-surface-tertiary"
+        className="w-full grid grid-cols-2 mt-8 mb-4 border-2"
         value={formatType}
         onValueChange={onFormatChange}
       >
-        <ToggleGroupItem value="size" className="w-full">
+        <ToggleGroupItem value="size" className="w-full data-[state=on]:bg-secondary">
           {"By size"}
         </ToggleGroupItem>
 
-        <ToggleGroupItem value="percentage" className="w-full">
+        <ToggleGroupItem value="percentage" className="w-full data-[state=on]:bg-secondary">
           {"As percentage"}
         </ToggleGroupItem>
       </ToggleGroup>
@@ -161,7 +161,7 @@ export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
           }
           title="Export"
           variant={"default"}
-          className="bg-brand-primary p-8 text-xl hover:bg-brand-hover cursor-pointer w-full disabled:bg-brand-disabled"
+          className="p-8 text-xl cursor-pointer"
           onClick={onExport}
           disabled={isExporting}
         />
