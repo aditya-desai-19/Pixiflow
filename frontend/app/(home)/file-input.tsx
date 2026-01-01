@@ -15,16 +15,20 @@ export default function FileInput() {
   const router = useRouter()
 
   const onFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!isLoggedIn) {
-      router.push("/login")
-      return
-    }
-
     const selected = e.target.files?.[0] ?? null
     if (selected) {
       setImage(selected)
       router.push("/resize")
     }
+  }
+
+  const onClick = () => {
+    if (!isLoggedIn) {
+      router.push("/login")
+      return
+    }
+
+    inputRef.current?.click()
   }
 
   return (
@@ -46,7 +50,7 @@ export default function FileInput() {
         <Button
           variant={"outline"}
           className="text-lg cursor-pointer w-52 p-6 my-1"
-          onClick={() => inputRef.current?.click()}
+          onClick={onClick}
         >
           {"Select image"}
         </Button>
