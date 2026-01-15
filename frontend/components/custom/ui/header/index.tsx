@@ -16,11 +16,13 @@ import {
 } from "../../../ui/dropdown-menu"
 import { authClient } from "@/api/client"
 import Spinner from "../spinner"
+import { useImageStore } from "@/zustand/image-store"
 
 export default function Header() {
   const [open, setOpen] = useState<boolean>(false)
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false)
   const { isLoggedIn, reset, userName } = useAuthStore()
+  const { clearImage } = useImageStore()
 
   const router = useRouter()
 
@@ -29,6 +31,7 @@ export default function Header() {
     try {
       await authClient.logoutUser()
       reset()
+      clearImage()
       router.replace("/")
     } catch (e) {
       console.error("Some error occurred while logging out")

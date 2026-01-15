@@ -30,6 +30,7 @@ export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
     changedHeight: height,
     changedWidth: width,
     setChangedDimensions,
+    clearImage
   } = useImageStore()
   const [isAspectRatioLocked, setIsAspectRatioLocked] = useState<boolean>(false)
   const [isExporting, setIsExporting] = useState<boolean>(false)
@@ -75,6 +76,7 @@ export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
       }
       const res = await imagesClient.uploadImage(body)
       await downloadImage(res.imageUrl, res.imageName)
+      clearImage()
     } catch (e) {
       console.error("Error exporting image:", e)
       toast.error("Some error occured while exporting image", {
