@@ -27,10 +27,10 @@ export default async function RootLayout({
   return (
     <html lang="en" className={inter.className}>
       <body className="overflow-auto">
-        <div className="flex flex-col h-screen lg:mx-10">
+        <div className="flex flex-col h-full lg:mx-10">
           <AuthHandler token={accessToken} />
           <Header />
-          <main>{children}</main>
+          <main className="flex-1">{children}</main>
           <Toaster />
         </div>
       </body>
