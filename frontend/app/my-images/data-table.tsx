@@ -16,7 +16,7 @@ import {
   GetAllImagesRequest,
   ImageDetailsResponse,
 } from "@/generated"
-import { Download, Image, Trash } from "lucide-react"
+import { Download, Image as ImageIcon, Trash } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import dayjs from "dayjs"
 import { Button } from "@/components/ui/button"
@@ -70,7 +70,7 @@ export default function DataTable() {
       setTotalPages(data.totalPages ?? 0)
     } catch (error) {
       console.log("Some error occured while fetching images ", error)
-      toast.error("Some error occured while exporting image", {
+      toast.error("Some error occured while fetching images", {
         className: "text-white! bg-red-500!",
         position: "bottom-left",
       })
@@ -132,7 +132,7 @@ export default function DataTable() {
               <Avatar className="rounded-sm">
                 <AvatarImage src={data.imageUrl} alt={data.imageName} />
                 <AvatarFallback className="text-xs">
-                  <Image />
+                  <ImageIcon />
                 </AvatarFallback>
               </Avatar>
               <span
@@ -275,13 +275,15 @@ export default function DataTable() {
         </AlertDialogContent>
       </AlertDialog>
       <Dialog open={showViewDialog} onOpenChange={setShowViewDialog}>
-        <DialogContent>
-          <DialogTitle>{currentImageDetails.imageName}</DialogTitle>
-          <div className="flex justify-center">
+        <DialogContent className="max-w-4xl px-4 py-2">
+          <DialogTitle className="w-8/10 truncate py-4" title={currentImageDetails.imageName}>
+            {currentImageDetails.imageName}
+          </DialogTitle>
+          <div className="relative w-full h-[60vh] rounded-lg overflow-hidden flex items-center justify-center">
             <img
               src={currentImageDetails.imageUrl}
-              className="h-60 object-contain"
               alt="current-image-url"
+              className="w-full h-full object-contain"
             />
           </div>
         </DialogContent>
