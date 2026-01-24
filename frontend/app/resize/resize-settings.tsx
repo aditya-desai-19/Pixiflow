@@ -30,7 +30,7 @@ export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
     changedHeight: height,
     changedWidth: width,
     setChangedDimensions,
-    clearImage
+    clearImage,
   } = useImageStore()
   const [isAspectRatioLocked, setIsAspectRatioLocked] = useState<boolean>(false)
   const [isExporting, setIsExporting] = useState<boolean>(false)
@@ -124,11 +124,17 @@ export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
         value={formatType}
         onValueChange={onFormatChange}
       >
-        <ToggleGroupItem value="size" className="w-full data-[state=on]:bg-secondary">
+        <ToggleGroupItem
+          value="size"
+          className="w-full data-[state=on]:bg-secondary"
+        >
           {"By size"}
         </ToggleGroupItem>
 
-        <ToggleGroupItem value="percentage" className="w-full data-[state=on]:bg-secondary">
+        <ToggleGroupItem
+          value="percentage"
+          className="w-full data-[state=on]:bg-secondary"
+        >
           {"As percentage"}
         </ToggleGroupItem>
       </ToggleGroup>

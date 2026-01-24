@@ -51,20 +51,20 @@ body {
 
 :root {
   --radius: 0.625rem;
-  --background: #ffffff;
-  --foreground: #333333;
-  --card: #ffffff;
-  --card-foreground: #333333;
-  --popover: #ffffff;
-  --popover-foreground: #333333;
-  --primary: #8685ef;
-  --primary-foreground: #ffffff;
-  --secondary: #faf8ff;
-  --secondary-foreground: #555555;
-  --muted: #e3e0f3;
-  --muted-foreground: #888888;
-  --accent: #ffffff;
-  --accent-foreground: oklch(0.205 0 0);
+  --background: hsl(0, 0, 98%);
+  --foreground: hsl(0, 0, 10%);
+  --card: hsl(0, 0, 98%);
+  --card-foreground: hsl(0, 0, 10%);
+  --popover: hsl(0, 0, 98%);
+  --popover-foreground: hsl(0, 0, 10%);
+  --primary: hsl(269 50% 50%);
+  --primary-foreground: hsl(0, 0, 98%);
+  --secondary: hsl(0, 0, 90%);
+  --secondary-foreground: hsl(0, 0, 20%);
+  --muted: hsl(0, 0, 80%);
+  --muted-foreground: hsl(0, 0, 30%);
+  --accent: hsl(0, 0, 95%);
+  --accent-foreground:  hsl(0, 0, 20%);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
@@ -85,20 +85,20 @@ body {
 }
 
 .dark {
-  --background: #333333;
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: hsl(0, 0, 10%);
+  --foreground: hsl(0, 0, 98%);
+  --card: hsl(0, 0, 10%);
+  --card-foreground: hsl(0, 0, 98%);
+  --popover: hsl(0, 0, 10%);
+  --popover-foreground: hsl(0, 0, 98%);
+  --primary: hsl(269 50% 50%);
+  --primary-foreground: hsl(0, 0, 10%);
+  --secondary: hsl(269 50% 50%);
+  --secondary-foreground: hsl(0, 0, 98%);
+  --muted: hsl(0, 0, 20%);
+  --muted-foreground: hsl(0, 0, 70%);
+  --accent: hsl(0, 0, 15%);
+  --accent-foreground: hsl(0, 0, 90%);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);

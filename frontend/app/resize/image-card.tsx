@@ -2,8 +2,10 @@
 
 import { Badge } from "@/components/ui/badge"
 import { useImageStore } from "@/zustand/image-store"
-import { ArrowRight } from "lucide-react"
-import CloseButton from "./close-button"
+import { ArrowRight, Crop, RefreshCcw, X } from "lucide-react"
+import ImageModificationButtons, {
+  ImageModificationButton,
+} from "./image-modification-buttons"
 
 export default function ImageCard() {
   const {
@@ -16,12 +18,28 @@ export default function ImageCard() {
     clearImage: onCancel,
   } = useImageStore()
 
+  const imageModificationButtons: Array<ImageModificationButton> = [
+    {
+      icon: <Crop />,
+      tooltipMessage: "Crop",
+      onClick: () => console.log("Crop clicked"),
+    },
+    {
+      icon: <RefreshCcw />,
+      tooltipMessage: "Rotate",
+      onClick: () => console.log("Rotate clicked"),
+    },
+    {
+      icon: <X />,
+      tooltipMessage: "Close",
+      onClick: onCancel,
+    },
+  ]
+
   return (
     <div className="flex justify-center items-center h-full">
       <div className="border-2 border-surface-tertiary overflow-auto w-full rounded-lg">
-        <div className="flex justify-end p-2 bg-gray-100">
-          <CloseButton onClose={onCancel} tooltipMessage="Remove Image" />
-        </div>
+        <ImageModificationButtons buttons={imageModificationButtons} />
         <div className="border-b-2 p-2 bg-gray-100 flex justify-center items-center">
           {file && (
             <img

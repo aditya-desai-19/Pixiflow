@@ -49,12 +49,12 @@ export default function FileInput() {
         />
         <Button
           variant={"outline"}
-          className="text-lg cursor-pointer w-52 p-6 my-1"
+          className="text-lg cursor-pointer px-12 py-6 my-1 rounded-2xl"
           onClick={onClick}
         >
           {"Select image"}
         </Button>
-        <p className="text-xs">{"Max file size: 5 mb"}</p>
+        <p className="text-xs text-muted">{"Max file size: 5 mb"}</p>
       </div>
     </div>
   )

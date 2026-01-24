@@ -43,7 +43,7 @@ export default function Header() {
   return (
     <nav className="relative flex justify-between items-center p-4 border-surface-tertiary border-b-2">
       <div className="flex items-center gap-2 md:gap-24">
-        <Link href={"/"} className="text-2xl">
+        <Link href={"/"} className="text-3xl">
           {"Pixiflow"}
         </Link>
         {isLoggedIn && (
@@ -90,12 +90,20 @@ export default function Header() {
             <Menu size={32} strokeOpacity={1} />
           </Button>
           <div className="hidden lg:flex gap-2">
-            <div>
-              <Button variant={"outline"} onClick={() => router.push("/login")} className="cursor-pointer">{"Login"}</Button>
-            </div>
-            <div>
-              <Button onClick={() => router.push("/signup")} className="cursor-pointer">{"Signup"}</Button>
-            </div>
+            <Button
+              variant={"outline"}
+              onClick={() => router.push("/login")}
+              className="cursor-pointer"
+            >
+              {"Login"}
+            </Button>
+
+            <Button
+              onClick={() => router.push("/signup")}
+              className="cursor-pointer"
+            >
+              {"Signup"}
+            </Button>
           </div>
         </div>
       )}
@@ -103,8 +111,19 @@ export default function Header() {
       {open && (
         <div className="absolute top-full left-0 w-full bg-surface-primary border-b border-surface-tertiary lg:hidden">
           <div className="flex flex-col gap-2 p-4">
-            <Button variant={"outline"} onClick={() => router.push("/login")} className="cursor-pointer">{"Login"}</Button>
-            <Button onClick={() => router.push("/signup")} className="cursor-pointer">{"Signup"}</Button>
+            <Button
+              variant={"outline"}
+              onClick={() => router.push("/login")}
+              className="cursor-pointer"
+            >
+              {"Login"}
+            </Button>
+            <Button
+              onClick={() => router.push("/signup")}
+              className="cursor-pointer"
+            >
+              {"Signup"}
+            </Button>
           </div>
         </div>
       )}
