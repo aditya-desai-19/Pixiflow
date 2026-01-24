@@ -276,7 +276,10 @@ export default function DataTable() {
       </AlertDialog>
       <Dialog open={showViewDialog} onOpenChange={setShowViewDialog}>
         <DialogContent className="max-w-4xl px-4 py-2">
-          <DialogTitle className="w-8/10 truncate py-4" title={currentImageDetails.imageName}>
+          <DialogTitle
+            className="w-8/10 truncate py-4"
+            title={currentImageDetails.imageName}
+          >
             {currentImageDetails.imageName}
           </DialogTitle>
           <div className="relative w-full h-[60vh] rounded-lg overflow-hidden flex items-center justify-center">

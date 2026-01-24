@@ -19,7 +19,7 @@ export default function ImageModificationButtons({
   buttons,
 }: ImageModificationIconsProps) {
   return (
-    <div className="flex justify-end gap-2 p-2 bg-gray-100">
+    <div className="flex justify-end gap-2 p-2">
       {buttons.map((button, index) => (
         <Tooltip key={index}>
           <TooltipTrigger asChild>
