@@ -267,7 +267,7 @@ export default function DataTable() {
             <AlertDialogCancel>{"Cancel"}</AlertDialogCancel>
             <AlertDialogAction
               onClick={onDeleteConfirm}
-              className="cursor-pointer"
+              className="cursor-pointer bg-destructive text-white hover:bg-destructive/90"
             >
               {"Continue"}
             </AlertDialogAction>
@@ -275,7 +275,7 @@ export default function DataTable() {
         </AlertDialogContent>
       </AlertDialog>
       <Dialog open={showViewDialog} onOpenChange={setShowViewDialog}>
-        <DialogContent className="max-w-4xl px-4 py-2">
+        <DialogContent className="max-w-none! w-4xl px-4 py-2">
           <DialogTitle
             className="w-8/10 truncate py-4"
             title={currentImageDetails.imageName}

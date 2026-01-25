@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { AspectRatio } from "./types"
+import { PixelCrop } from "react-image-crop"
 
 interface CropMenuProps {
   originalHeight: number
@@ -21,6 +22,8 @@ interface CropMenuProps {
   onCroppedWidthChange: (value: number) => void
   onCroppedHeightChange: (value: number) => void
   onAspectRatioChange: (value: AspectRatio) => void
+  completedCrop: PixelCrop | undefined
+  onCropClick: () => void
 }
 
 export default function CropMenu({
@@ -29,9 +32,11 @@ export default function CropMenu({
   croppedWidth,
   croppedHeight,
   aspectRatio,
+  completedCrop,
   onCroppedWidthChange,
   onCroppedHeightChange,
   onAspectRatioChange,
+  onCropClick,
 }: CropMenuProps) {
 
   const onValueChange = (value: AspectRatio) => {
@@ -131,7 +136,7 @@ export default function CropMenu({
         </Select>
       </Field>
       <div className="flex justify-center py-4">
-        <Button className="px-16 py-4">Crop</Button>
+        <Button className="px-16 py-4" onClick={onCropClick} disabled={!completedCrop || completedCrop.width <= 0 || completedCrop.height <= 0}>Crop</Button>
       </div>
     </div>
   )

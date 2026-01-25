@@ -19,7 +19,7 @@ export default function ImageCard() {
     changedWidth,
     clearImage: onCancel,
   } = useImageStore()
-  const [isCropDialogOpen, setIsCropDialogOpen] = useState<boolean>(true)
+  const [isCropDialogOpen, setIsCropDialogOpen] = useState<boolean>(false)
 
   const imageModificationButtons: Array<ImageModificationButton> = [
     {
