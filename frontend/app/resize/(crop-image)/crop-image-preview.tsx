@@ -10,7 +10,7 @@ interface CropPreviewProps {
   croppedWidth: number
   croppedHeight: number
   aspectRatio: AspectRatio
-  imgRef: RefObject<HTMLImageElement | null>
+  ref: RefObject<HTMLImageElement | null>
   setCompletedCrop: (crop: PixelCrop) => void
 }
 
@@ -18,7 +18,7 @@ export default function CropPreview({
   croppedWidth,
   croppedHeight,
   aspectRatio,
-  imgRef,
+  ref,
   setCompletedCrop,
 }: CropPreviewProps) {
   const {
@@ -55,7 +55,7 @@ export default function CropPreview({
       >
         {/*make image more responsive */}
         <img
-          ref={imgRef}
+          ref={ref}
           src={previewUrl || ""}
           alt="crop-image"
           className="h-96 object-contain"

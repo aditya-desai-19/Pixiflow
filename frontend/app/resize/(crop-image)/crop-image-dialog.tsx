@@ -123,7 +123,7 @@ export default function CropImageDialog({ open, onOpenChange }: CropImageDialogP
           croppedWidth={croppedWidth}
           croppedHeight={croppedHeight}
           aspectRatio={aspectRatio}
-          imgRef={imgRef}
+          ref={imgRef}
           setCompletedCrop={setCompletedCrop}
         />
       }
