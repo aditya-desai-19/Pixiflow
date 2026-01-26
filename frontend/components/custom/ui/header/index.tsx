@@ -17,12 +17,18 @@ import {
 import { authClient } from "@/api/client"
 import Spinner from "../spinner"
 import { useImageStore } from "@/zustand/image-store"
+import { usePathname } from 'next/navigation'
+import { clsx } from "clsx"
 
 export default function Header() {
   const [open, setOpen] = useState<boolean>(false)
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false)
   const { isLoggedIn, reset, userName } = useAuthStore()
   const { clearImage } = useImageStore()
+  const pathname = usePathname()
+
+  const isResizePage = pathname === '/resize';
+  const isMyImagesPage = pathname === '/my-images';
 
   const router = useRouter()
 
@@ -47,11 +53,11 @@ export default function Header() {
           {"Pixiflow"}
         </Link>
         {isLoggedIn && (
-          <div className="flex gap-4">
-            <Link href={"/resize"} className="text-sm">
+          <div className="flex gap-8">
+            <Link href={"/resize"} className={clsx(isResizePage && "font-semibold")}>
               {"Resize"}
             </Link>
-            <Link href={"/my-images"} className="text-sm">
+            <Link href={"/my-images"} className={clsx( isMyImagesPage && "font-semibold")}>
               {"My Images"}
             </Link>
           </div>

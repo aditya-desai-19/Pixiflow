@@ -6,8 +6,9 @@ import { ArrowRight, Crop, RefreshCcw, X } from "lucide-react"
 import ImageModificationButtons, {
   ImageModificationButton,
 } from "./image-modification-buttons"
-import CropDialog from "./(crop-image)/crop-dialog"
+import CropImageDialog from "./(crop-image)/crop-image-dialog"
 import { useState } from "react"
+import RotateImageDialog from "./(rotate-image)/rotate-image-dialog"
 
 export default function ImageCard() {
   const {
@@ -20,6 +21,8 @@ export default function ImageCard() {
     clearImage: onCancel,
   } = useImageStore()
   const [isCropDialogOpen, setIsCropDialogOpen] = useState<boolean>(false)
+  const [isRotateDialogOpen, setIsRotateDialogOpen] = useState<boolean>(false)
+  
 
   const imageModificationButtons: Array<ImageModificationButton> = [
     {
@@ -30,7 +33,7 @@ export default function ImageCard() {
     {
       icon: <RefreshCcw />,
       tooltipMessage: "Rotate",
-      onClick: () => console.log("Rotate clicked"),
+      onClick: () => setIsRotateDialogOpen(true),
     },
     {
       icon: <X />,
@@ -42,7 +45,14 @@ export default function ImageCard() {
   return (
     <div className="flex flex-col border-2 h-full w-full">
       <ImageModificationButtons buttons={imageModificationButtons} />
-      <CropDialog open={isCropDialogOpen} onOpenChange={setIsCropDialogOpen} />
+      <CropImageDialog
+        open={isCropDialogOpen}
+        onOpenChange={setIsCropDialogOpen}
+      />
+      <RotateImageDialog
+        open={isRotateDialogOpen}
+        onOpenChange={setIsRotateDialogOpen}
+      />
       <div className="border-b-2 p-2 flex flex-1 justify-center items-center">
         {file && (
           <img
