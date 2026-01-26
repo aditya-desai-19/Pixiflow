@@ -95,7 +95,7 @@ export default function Header() {
           >
             <Menu size={32} strokeOpacity={1} />
           </Button>
-          <div className="hidden lg:flex gap-2">
+          <div className="hidden lg:flex gap-4">
             <Button
               variant={"outline"}
               onClick={() => router.push("/login")}
@@ -114,8 +114,8 @@ export default function Header() {
         </div>
       )}
 
-      {open && (
-        <div className="absolute top-full left-0 w-full bg-surface-primary border-b border-surface-tertiary lg:hidden">
+      {(!isLoggedIn && open) && (
+        <div className="absolute top-full left-0 w-full bg-background border-b border-surface-tertiary lg:hidden">
           <div className="flex flex-col gap-2 p-4">
             <Button
               variant={"outline"}
