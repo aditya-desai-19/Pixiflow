@@ -14,13 +14,28 @@ import { downloadImage } from "@/utils/download-image"
 import { toast } from "sonner"
 import { IconButton } from "@/components/custom/ui/button"
 import Spinner from "@/components/custom/ui/spinner"
+import { Field, FieldLabel } from "@/components/ui/field"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface ResizeSettingsProps {
   onClose?: () => void
 }
 
+enum ImageFormat {
+  Jpeg = "image/jpg",
+  Png = "image/png",
+  Webp = "image/webp",
+}
+
 export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
   const [formatType, setFormatType] = useState<Format>(Format.Size)
+  const [imageFormat, setImageFormat] = useState<ImageFormat>(ImageFormat.Jpeg)
 
   const {
     file,
@@ -73,6 +88,7 @@ export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
         width: width,
         height: height,
         file: file,
+        fileType: imageFormat,
       }
       const res = await imagesClient.uploadImage(body)
       await downloadImage(res.imageUrl, res.imageName)
@@ -106,6 +122,18 @@ export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
   useEffect(() => {
     setChangedDimensions(originalWidth, originalHeight)
   }, [originalHeight, originalWidth])
+
+  useEffect(() => {
+    if (!file) return
+    const imageType = file.type
+    if (
+      imageType === ImageFormat.Jpeg ||
+      imageType === ImageFormat.Png ||
+      imageType === ImageFormat.Webp
+    ) {
+      setImageFormat(imageType as ImageFormat)
+    }
+  }, [file])
 
   return (
     <div className="w-full h-full p-4 flex flex-col">
@@ -158,6 +186,23 @@ export default function ResizeSettings({ onClose }: ResizeSettingsProps) {
         </div>
       </div>
 
+      <Field>
+        <FieldLabel>Save Image as</FieldLabel>
+        <Select
+          defaultValue={ImageFormat.Jpeg}
+          value={imageFormat}
+          onValueChange={(value) => setImageFormat(value as ImageFormat)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select image format" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ImageFormat.Jpeg}>JPG</SelectItem>
+            <SelectItem value={ImageFormat.Png}>PNG</SelectItem>
+            <SelectItem value={ImageFormat.Webp}>WebP</SelectItem>
+          </SelectContent>
+        </Select>
+      </Field>
       <div className="my-16">
         <IconButton
           icon={

@@ -52,11 +52,11 @@ public class ImageController implements ImagesApi {
 
   @Override
   public ResponseEntity<ImageUploadResponse> uploadImage(
-      MultipartFile file, Integer height, Integer width) {
-    byte[] resizedImage = openCVService.resizeImage(file, height, width);
+      MultipartFile file, Integer height, Integer width, String fileType) {
+    byte[] resizedImage = openCVService.resizeImage(file, height, width, fileType);
 
     FileUploadResponse fileUploadResponse =
-        awsS3Service.uploadFile(resizedImage, file.getContentType());
+        awsS3Service.uploadFile(resizedImage, fileType);
 
     imageService.saveImage(fileUploadResponse);
 

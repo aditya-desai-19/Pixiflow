@@ -18,7 +18,7 @@ import { authClient } from "@/api/client"
 import Spinner from "../spinner"
 import { useImageStore } from "@/zustand/image-store"
 import { usePathname } from 'next/navigation'
-import { clsx } from "clsx"
+import clsx from "clsx"
 
 export default function Header() {
   const [open, setOpen] = useState<boolean>(false)

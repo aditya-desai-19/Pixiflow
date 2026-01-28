@@ -124,7 +124,7 @@ export default function CropMenu({
         <FieldLabel>Aspect Ratio</FieldLabel>
         <Select defaultValue={aspectRatio} onValueChange={onValueChange}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a fruit" />
+            <SelectValue placeholder="Select aspect ratio" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={AspectRatio.Freeform}>Freeform</SelectItem>

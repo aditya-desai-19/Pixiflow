@@ -158,6 +158,25 @@ components:
         - imageUrl
         - imageName
 
+    ImageUploadRequest:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+        height:
+          type: integer
+        width:
+          type: integer
+        fileType:
+          type: string
+          description: "The type of the file being uploaded (e.g., 'image/jpeg', 'image/png')"
+      required:
+        - file
+        - height
+        - width
+        - fileType
+
 paths:
   /api/auth/test:
     get:
@@ -318,19 +337,7 @@ paths:
         content: 
           multipart/form-data:
             schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-                height:
-                  type: integer
-                width:
-                  type: integer
-              required:
-                - file
-                - height
-                - width
+              $ref: "#/components/schemas/ImageUploadRequest"
       responses:
         '200':
           description: Upload imaged successfully

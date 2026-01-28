@@ -12,8 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class OpenCVService {
 
-  public byte[] resizeImage(MultipartFile file, double height, double width) {
+  public byte[] resizeImage(MultipartFile file, double height, double width, String fileType) {
     try {
+      if(!fileType.contains("image")) {
+        throw new RuntimeException("Invalid file type");
+      }
+
       Mat image = createMatObject(file.getBytes());
 
       Mat resizedImage = new Mat();
@@ -21,8 +25,8 @@ public class OpenCVService {
       Imgproc.resize(image, resizedImage, size);
 
       MatOfByte matOfByte = new MatOfByte();
-      String fileContentType = "." + file.getContentType().substring(6);
-      Imgcodecs.imencode(fileContentType, resizedImage, matOfByte);
+      String fileExtension = "." + fileType.substring(6);
+      Imgcodecs.imencode(fileExtension, resizedImage, matOfByte);
 
       return matOfByte.toArray();
     } catch (Exception e) {
