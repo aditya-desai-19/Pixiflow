@@ -11,6 +11,9 @@ I'm learning Spring Boot. To apply my knowledge I have created this project.
 * Resize images to any custom height and width.
 * View and manage previously resized images.
 * Resize images using two methods by exact dimensions or by percentage.
+* Crop images using freeform selection or predefined shapes.
+* Rotate the image in multiple angles.
+* Export images in multiple formats.
 
 ## Tech Stack
 
